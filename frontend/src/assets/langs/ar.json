@@ -1,0 +1,46 @@
+{
+    "loader" : {
+        "text" : "جاري التحميل"
+    }
+    ,"login": {
+        "title": "تسجيل الدخول",
+        "username": "اسم المستخدم",
+        "password": "كلمة المرور",
+        "submit": "تسجيل",
+        "loading" : "جاري تسجيل الدخول ..."
+    }
+    ,"register" : {
+        "title" : "إنشــاء حســاب جديد" , 
+        "tabs" : {
+            "mainInfo" : {
+                "title" : "المعــلومات الشخصية",
+                "fields" : {
+                    "username" : "اسـم المستخدم" ,
+                    "password" : "كلمة المرور" , 
+                    "confirmPassword" : "تأكيد كلمة المرور" , 
+                    "phone" : "رقم الهـاتف", 
+                    "role" : {
+                        "manager" : "مدير",
+                        "admin" : "صاحب المؤسسه" , 
+                        "seller" : "بائع"
+                    }
+                }
+            },
+            "permessions"  : {
+                "title" : "الصـلاحيات",
+                  "categories" : {
+                    "general" : "عــامة" , 
+                    "manager" : "مشرفين" , 
+                    "admin" : "مدير"
+                }
+                ,"permessions" : {
+                    "sell" : "فاتورة بيع",
+                    "addUser" : "اضافة مستخدم" , 
+                    "sellReports" : "تقارير مبيعات"
+                }
+            }
+        }
+        ,"submit" : "إنشــاء"
+        
+    }
+}

@@ -1,0 +1,62 @@
+[2026-01-22T03:29:13.427Z] [ERROR] Error: Table 'omega.permessions' doesn't exist 
+[2026-01-22T03:39:28.903Z] [ERROR] ReferenceError: name is not defined 
+[2026-01-22T05:42:30.727Z] [ERROR] Generate Token Method Error ↓ 
+[2026-01-22T05:42:30.730Z] [ERROR] ReferenceError: jwt is not defined 
+[2026-01-22T05:42:35.423Z] [ERROR] ReferenceError: jwt is not defined 
+[2026-01-22T05:42:35.423Z] [ERROR] Generate Token Method Error ↓ 
+[2026-01-22T05:42:38.561Z] [ERROR] Generate Token Method Error ↓ 
+[2026-01-22T05:42:38.561Z] [ERROR] ReferenceError: jwt is not defined 
+[2026-01-22T05:42:57.828Z] [ERROR] ReferenceError: jwt is not defined 
+[2026-01-22T05:42:57.827Z] [ERROR] Generate Token Method Error ↓ 
+[2026-01-22T05:54:24.035Z] [ERROR] ReferenceError: error is not defined 
+[2026-01-22T05:57:52.019Z] [ERROR] no.payload.provided 
+[2026-01-22T05:57:52.021Z] [ERROR] Cannot read properties of undefined (reading 'message') 
+[2026-01-22T05:57:52.021Z] [ERROR] undefined 
+[2026-01-22T06:26:00.269Z] [ERROR] Verify Token Method Error ↓ [token]-> dsadsada  
+[2026-01-22T06:26:00.270Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:27:17.773Z] [ERROR] TypeError: Cannot read properties of undefined (reading 'trim') 
+[2026-01-22T06:27:47.853Z] [ERROR] JsonWebTokenError: jwt must be provided 
+[2026-01-22T06:27:47.852Z] [ERROR] Verify Token Method Error ↓ [token]-> undefined  
+[2026-01-22T06:29:21.948Z] [ERROR] JsonWebTokenError: jwt must be provided 
+[2026-01-22T06:29:21.947Z] [ERROR] Verify Token Method Error ↓ [token]-> undefined  
+[2026-01-22T06:29:30.165Z] [ERROR] JsonWebTokenError: jwt must be provided 
+[2026-01-22T06:29:30.164Z] [ERROR] Verify Token Method Error ↓ [token]-> undefined  
+[2026-01-22T06:29:47.165Z] [ERROR] TypeError: Cannot read properties of undefined (reading 'trim') 
+[2026-01-22T06:30:13.169Z] [ERROR] TypeError: Cannot read properties of undefined (reading 'trim') 
+[2026-01-22T06:30:15.573Z] [ERROR] Verify Token Method Error ↓ [token]->   
+[2026-01-22T06:30:15.574Z] [ERROR] JsonWebTokenError: jwt must be provided 
+[2026-01-22T06:31:01.275Z] [ERROR] Verify Token Method Error ↓ [token]-> false  
+[2026-01-22T06:31:01.276Z] [ERROR] JsonWebTokenError: jwt must be provided 
+[2026-01-22T06:31:07.005Z] [ERROR] TypeError: Cannot read properties of undefined (reading 'trim') 
+[2026-01-22T06:33:27.403Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:33:27.402Z] [ERROR] Verify Token Method Error ↓ [token]-> dsa  
+[2026-01-22T06:38:14.797Z] [ERROR] Verify Token Method Error ↓ [token]-> a  
+[2026-01-22T06:38:14.798Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:39:10.200Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:39:10.199Z] [ERROR] Verify Token Method Error ↓ [token]-> a  
+[2026-01-22T06:45:02.462Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:45:02.462Z] [ERROR] Verify Token Method Error ↓ [token]-> ad  
+[2026-01-22T06:46:53.398Z] [ERROR] Verify Token Method Error ↓ [token]-> sad  
+[2026-01-22T06:46:53.399Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:46:59.935Z] [ERROR] Verify Token Method Error ↓ [token]-> sad  
+[2026-01-22T06:46:59.936Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:47:11.066Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:47:11.066Z] [ERROR] Verify Token Method Error ↓ [token]-> sad  
+[2026-01-22T06:48:01.346Z] [ERROR] ReferenceError: token is not defined 
+[2026-01-22T06:50:44.570Z] [ERROR] Verify Token Method Error ↓ [token]-> dadsa  
+[2026-01-22T06:50:44.571Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:51:36.643Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:51:36.642Z] [ERROR] Verify Token Method Error ↓ [token]-> DS  
+[2026-01-22T06:51:58.997Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:51:58.996Z] [ERROR] Verify Token Method Error ↓ [token]-> da  
+[2026-01-22T06:52:31.615Z] [ERROR] JsonWebTokenError: jwt malformed 
+[2026-01-22T06:52:31.614Z] [ERROR] Verify Token Method Error ↓ [token]-> da  
+[2026-01-22T06:54:06.456Z] [ERROR] Verify Token Method Error ↓ [token]-> da.sd.sd  
+[2026-01-22T06:54:06.457Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-22T06:54:11.057Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-22T06:54:11.057Z] [ERROR] Verify Token Method Error ↓ [token]-> da.sd.sd23  
+[2026-01-22T06:54:37.948Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-22T06:54:37.948Z] [ERROR] Verify Token Method Error ↓ [token]-> eyJhbGciOiJIUzsI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJhZG1pbiIsIm5pY2tuYW1lIjoiW0dNXSIsInJvbGUiOiJub3JtYWwiLCJpYXQiOjE3NjkwNjE1MjYsImV4cCI6MTc2OTA5NzUyNiwiaXNzIjoiZHIud2FsZWVkLW9zYW1hIn0.K0RUh9eW1esngmros40Ul9vyt18eGQBDqaCJ2iyYNQ4  
+[2026-01-22T07:02:30.271Z] [ERROR] TypeError: userPermessions.includes is not a function 
+[2026-01-22T07:03:05.166Z] [ERROR] TypeError: Cannot read properties of undefined (reading 'includes') 
+[2026-01-22T07:03:49.457Z] [ERROR] TypeError: userPermessions.includes is not a function 

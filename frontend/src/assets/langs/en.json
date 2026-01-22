@@ -1,0 +1,45 @@
+{
+    "loader" : {
+        "text" : "loading"
+    },
+    "login": {
+        "title": "Login",
+        "username": "username",
+        "password": "Password",
+        "submit": "Login" , 
+        "loading" : "logging ..."
+    } 
+    ,"register" : {
+        "title" : "Create Account" , 
+        "tabs" : {
+            "mainInfo" : {
+                "title" : "Personal info",
+                "fields" : {
+                    "username" : "Username" ,
+                    "password" : "Password" , 
+                    "confirmPassword" : "Confirm password" , 
+                    "phone" : "Phone number", 
+                    "role" : {
+                        "manager" : "manager",
+                        "admin" : "admin" , 
+                        "seller" : "seller"
+                    }
+                }
+            },
+            "permessions"  :  {
+                "title" : "permessions" , 
+                "categories" : {
+                    "general" : "general" , 
+                    "manager" : "manager" , 
+                    "admin" : "admin"
+                }
+                ,"permessions" : {
+                    "sell" : "sell",
+                    "addUser" : "add user" , 
+                    "sellReports" : "sell reports"
+                }
+            }
+        }
+         ,"submit" : "create"
+    }
+}

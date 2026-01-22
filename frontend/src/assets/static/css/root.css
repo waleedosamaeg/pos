@@ -1,0 +1,31 @@
+@font-face {
+    font-family: "quicksand";
+    src: url("@font/Quicksand/Quicksand-VariableFont_wght.ttf") format("truetype");
+}
+
+*{
+    box-sizing: border-box;
+    margin : 0;
+    padding : 0;
+
+}
+:root { 
+    --background: radial-gradient(circle at top, #020617, #020617, #000);
+    --ess-color : gold;
+    --max-z-index:9999;
+}
+body { 
+    font-family: "quicksand";
+    
+}
+
+div.loader { 
+    position: absolute;
+    inset : 0;
+    padding : 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index:var(--max-z-index);
+    backdrop-filter: blur(3px);
+}

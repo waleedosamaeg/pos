@@ -1,0 +1,37 @@
+[2026-01-21T03:09:21.080Z] [ERROR] Error: "algorithm" must be a valid string enum value 
+[2026-01-21T03:09:52.708Z] [ERROR] Error: "issuer" must be a string 
+[2026-01-21T03:10:07.942Z] [ERROR] Error: "expiresIn" should be a number of seconds or string representing a timespan 
+[2026-01-21T03:23:53.015Z] [ERROR] Verify Token Method Error ↓ 
+[2026-01-21T03:23:53.016Z] [ERROR] JsonWebTokenError: invalid signature 
+[2026-01-21T03:28:48.804Z] [ERROR] Verify Token Method Error ↓ 
+[2026-01-21T03:28:48.805Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-21T03:29:43.716Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-21T03:29:43.716Z] [ERROR] Verify Token Method Error [token] sdseyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiIxIiwibmlja25hbWUiOiJ1c2VyIiwiaWF0IjoxNzY4OTY2MTgzLCJleHAiOjE3NjkwMDIxODMsImlzcyI6ImRyLndhbGVlZC1vc2FtYSJ9.EertSlYSCLr0SL7wqELDAqEgr6bItTbTpaCJ5BblpGI↓ 
+[2026-01-21T03:31:41.149Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-21T03:31:41.148Z] [ERROR] Verify Token Method Error ↓ [token]-> daseyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiIxIiwibmlja25hbWUiOiJ1c2VyIiwiaWF0IjoxNzY4OTY2MzAxLCJleHAiOjE3NjkwMDIzMDEsImlzcyI6ImRyLndhbGVlZC1vc2FtYSJ9.Pl7KCSsf3P_c3fpXuzm_ax-JmHstO3yokSIw7YiQgrc  
+[2026-01-21T03:32:19.736Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-21T03:32:19.735Z] [ERROR] Verify Token Method Error ↓ [token]-> daseyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiIxIiwibmlja25hbWUiOiJ1c2VyIiwiaWF0IjoxNzY4OTY2MzM5LCJleHAiOjE3NjkwMDIzMzksImlzcyI6ImRyLndhbGVlZC1vc2FtYSJ9.jNx5fDMAIfk0E7KkookgYIN3_82z1JBGmbuEauS0VbY  
+[2026-01-21T03:36:04.454Z] [ERROR] Verify Token Method Error ↓ [token]-> daseyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiIxIiwibmlja25hbWUiOiJ1c2VyIiwiaWF0IjoxNzY4OTY2NTY0LCJleHAiOjE3NjkwMDI1NjQsImlzcyI6ImRyLndhbGVlZC1vc2FtYSJ9.kviXcYpQIbsZDj3DpzMWAI4qg_cDHUhHN9XpciH17uY  
+[2026-01-21T03:36:04.455Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-21T03:58:58.790Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-21T03:58:58.789Z] [ERROR] Verify Token Method Error ↓ [token]-> daseyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiIxIiwibmlja25hbWUiOiJ1c2VyIiwiaWF0IjoxNzY4OTY3OTM4LCJleHAiOjE3NjkwMDM5MzgsImlzcyI6ImRyLndhbGVlZC1vc2FtYSJ9.UpqbQjLPgPfoyk1u1YmF8S-tviog0iMIUn_fhV7xFRE  
+[2026-01-21T04:08:02.926Z] [ERROR] Verify Token Method Error ↓ [token]-> daseyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiIxIiwibmlja25hbWUiOiJ1c2VyIiwiaWF0IjoxNzY4OTY4NDgyLCJleHAiOjE3NjkwMDQ0ODIsImlzcyI6ImRyLndhbGVlZC1vc2FtYSJ9.6H17J6Y0nCPlLssiR4tsEBAvaK-hprDhU5NGzGZJaVY  
+[2026-01-21T04:08:02.926Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-21T04:09:55.900Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-21T04:09:55.899Z] [ERROR] Verify Token Method Error ↓ [token]-> daseyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiIxIiwibmlja25hbWUiOiJ1c2VyIiwiaWF0IjoxNzY4OTY4NTk1LCJleHAiOjE3NjkwMDQ1OTUsImlzcyI6ImRyLndhbGVlZC1vc2FtYSJ9.2YqAOC1aC4tPYO7fBopjAnRNWsDUwpd_6nLAuFJr-1Y  
+[2026-01-21T04:14:38.895Z] [ERROR] Verify Token Method Error ↓ [token]-> daseyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiIxIiwibmlja25hbWUiOiJ1c2VyIiwiaWF0IjoxNzY4OTY4ODc4LCJleHAiOjE3NjkwMDQ4NzgsImlzcyI6ImRyLndhbGVlZC1vc2FtYSJ9.Jw0FP2sqyum-mN1Xcj1K1dKMV8mtvP9Jmqo0LyuO6Bs  
+[2026-01-21T04:14:38.896Z] [ERROR] JsonWebTokenError: invalid token 
+[2026-01-21T04:27:09.905Z] [ERROR] Cannot read properties of undefined (reading 'state') 
+[2026-01-21T04:27:09.904Z] [ERROR] TypeError: Cannot read properties of undefined (reading 'trim') 
+[2026-01-21T04:29:27.244Z] [ERROR] Cannot read properties of undefined (reading 'username') 
+[2026-01-21T04:31:49.506Z] [ERROR] Cannot read properties of undefined (reading 'username') 
+[2026-01-21T04:34:47.030Z] [ERROR] Cannot read properties of undefined (reading 'username') 
+[2026-01-21T04:35:31.416Z] [ERROR] Cannot read properties of undefined (reading 'username') 
+[2026-01-21T04:36:29.868Z] [ERROR] Cannot read properties of undefined (reading 'username') 
+[2026-01-21T05:26:29.269Z] [ERROR] Table 'omega.acccounts' doesn't exist 
+[2026-01-21T05:28:26.433Z] [ERROR] Table 'omega.acccounts' doesn't exist 
+[2026-01-21T05:31:51.544Z] [ERROR] Table 'omega.acccounts' doesn't exist 
+[2026-01-21T05:35:24.617Z] [ERROR] Duplicate entry '01023612635' for key 'accounts.phone' 
+[2026-01-21T05:36:15.214Z] [ERROR] Duplicate entry '01023612635' for key 'accounts.phone' 
+[2026-01-21T05:36:16.458Z] [ERROR] Duplicate entry '01023612635' for key 'accounts.phone' 
+[2026-01-21T05:36:38.790Z] [ERROR] Table 'omega.accounts' doesn't exist 
