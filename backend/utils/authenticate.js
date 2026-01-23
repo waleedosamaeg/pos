@@ -27,11 +27,12 @@ export default class Authenticate {
                 }
                 const username = rows[0]?.username ;
                 const nickname = rows[0]?.nickname;
-                const role = rows[0]?.role;
                 const id = rows[0]?.id;
                 const last_seen = rows[0]?.last_seen;
-                const permessions = []
-                const payload = {id , username  , nickname , role , permessions}
+                const super_admin = rows[0]?.super_admin
+                const role_id = rows[0]?.role_id || 1
+        
+                const payload = {id , username  , nickname , last_seen , role_id , super_admin  }
                 
 
                 const token = new Token().generate(payload)
@@ -44,31 +45,4 @@ export default class Authenticate {
             return {state  : false , reason : e.message}
         }
     }
-    // check the JWT Token 
-    // verifyToken(token)  {
-    //     try { 
-    //         // verify the token with it's claims 
-    //         const v = jwt.verify(token , this.#JWT_SECRET , {algorithms : [process.env.JWT_ALG] , issuer : process.env.JWT_ISSUER })
-    //         return {state: true  , data : v}
-    //     }catch(e) { 
-    //         if (e.name === "JsonWebTokenError" && e.message === "invalid signature") { 
-    //             return {state : false , reason : e.message}
-    //         }
-    //         error(`Verify Token Method Error ↓ [token]-> ${token} `)
-    //         error(e)
-
-    //         return {state : false , reason : e.message}
-    //     }
-    // }
-
-
-    // #generateToken(payload) { 
-    //     try { 
-    //         return jwt.sign(payload , this.#JWT_SECRET , {expiresIn : process.env.JWT_EXPIRES , algorithm : process.env.JWT_ALG  , issuer : process.env.JWT_ISSUER })
-    //     }catch(e) { 
-    //         error("Generate Token Method Error ↓")
-    //         error(e)
-    //     }
-
-    // }
-}
+  }

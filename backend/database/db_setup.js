@@ -1,5 +1,9 @@
 import Tables from "./tables.js"
-import permessionsRecords from "./records/permessions.js"
+import permissionsRecords from "./records/permissions.js"
+import rolesRecords from "./records/roles.js"
+import rolePermissionsRecords from "./records/role_permissions.js"
+import accountsRecords from "./records/accounts.js"
+import extraPermissionsRecords from "./records/extraPermissions.js"
 import mysql from "mysql2/promise"
 import { error as e  , info } from "../utils/logger.js"
 
@@ -22,17 +26,40 @@ export class Database {
             info("Connected to MySQL server ✅");
             info("Creating Database Tables , Please Wait ...")
             tables.map(async (item  , index , srcArray)=>{
-                const query = await connection.execute(item , [])
+                await connection.execute(item , [])
                 // console.log("Query Executed !")
             })
 
-            // clearing the Permessions Table to prenvent Duplicate
-            await connection.execute(  "DELETE FROM permessions ", [])
+        
+            
             // add Permessions table  default records
-            info("Adding Default Permessions table Records ...")
-            permessionsRecords.map(async (item , index , srcArray)=>{
+            info("Adding Default Permessions  Records ...")
+            permissionsRecords.map(async (item , index , srcArray)=>{
                 await connection.execute( item , [])
             })
+            // add roles table default records
+            info("Adding Default Roles  Records ...")
+            rolesRecords.map(async(item)=>{
+                await connection.execute(item , [])
+            })
+
+            // add role_permissions table default records 
+            info("Adding Default role_permissions  Records ...")
+            rolePermissionsRecords.map(async(item)=>{
+                await connection.execute(item , [])
+            })
+           // add accounts   default records 
+            info("Adding Default accounts  Records ...")
+            accountsRecords.map(async(item)=>{
+                await connection.execute(item , [])
+            })
+
+            // add extra_permissions default records 
+            info("Adding extra_permissions default  Records ...")
+            extraPermissionsRecords.map(async(item)=>{
+                await connection.execute(item , [])
+            })
+
             // close the initialize Connection
             await connection.end();
            

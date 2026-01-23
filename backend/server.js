@@ -8,8 +8,8 @@ import router from "./route/router.js"
 import { info } from "./utils/logger.js"
 async function Main() { 
     // setup and Creating database tables 
-    const db =  new Database()
-    await db.setup()
+    // const db =  new Database()
+    // await db.setup()
 
 
     const app = new express()

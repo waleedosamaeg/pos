@@ -1,9 +1,10 @@
 import express from "express"
 import Register from "../utils/register.js"
-import Authorize from "../middlewares/authorize.js"
+import permAuthorize from "../middlewares/permAuthorize.js"
 const router = express.Router()
 
-router.post("/register" , Authorize("create.account") , async  (req , res) => { 
+// fetch the create account permession id from the database 
+router.post("/register" , permAuthorize("create.account") , async  (req , res) => { 
 
     
     const newAccount = new Register()
