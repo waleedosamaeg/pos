@@ -1,6 +1,7 @@
 @font-face {
     font-family: "quicksand";
     src: url("@font/Quicksand/Quicksand-VariableFont_wght.ttf") format("truetype");
+    font-display: swap;
 }
 
 *{
@@ -10,22 +11,32 @@
 
 }
 :root { 
-    --background: radial-gradient(circle at top, #020617, #020617, #000);
-    --ess-color : gold;
-    --max-z-index:9999;
+
+    --bg-main: radial-gradient(circle at top, #020617, #020617, #000);
+
+    --color-primary: #facc15; /* gold but controlled */
+    --color-text: #e5e7eb;
+    --color-muted: #9ca3af;
+    --color-error: #ef4444;
+    --color-border: #1f2933;
+
+    --z-overlay: 9999;
+
+
 }
-body { 
-    font-family: "quicksand";
-    
+body {
+    font-family: "Quicksand", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-main);
+    color: var(--color-text);
 }
 
-div.loader { 
-    position: absolute;
-    inset : 0;
-    padding : 10px;
+.loader {
+    position: fixed;
+    inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index:var(--max-z-index);
+    z-index: var(--z-overlay);
     backdrop-filter: blur(3px);
+    background: rgba(2, 6, 23, 0.6);
 }

@@ -1,4 +1,4 @@
-import { Children, createContext  , useContext , useReducer} from "react";
+import {  createContext  , useContext , useReducer} from "react";
 
 const AppContext = createContext();
 const initialState = {
@@ -6,6 +6,7 @@ const initialState = {
     theme : 'dark' , 
     loading : false , 
     lang : "ar",
+    modal : null
 
 }
 
@@ -19,6 +20,10 @@ function appReducer(state  , action )  {
             return {...state , loading : true}
         case "stop.loading" : 
             return {...state , loading : false} 
+        case "modal" : 
+            return {...state , modal : action.payload}
+        case "remove.modal" : 
+            return {...state , modal : null}
         case "set-lang" : 
             return {...state , lang : action.payload}
 

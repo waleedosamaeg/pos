@@ -23,6 +23,8 @@
     "react-dom": "^19.2.3",
     "react-i18next": "^16.5.3",
     "react-loading-indicators": "^1.0.1",
+    "react-router-dom": "^7.13.0",
+    "rsuite": "^6.1.1",
     "tailwindcss": "^4.0.0"
   },
   "devDependencies": {

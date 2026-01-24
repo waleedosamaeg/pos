@@ -2,6 +2,7 @@ import TokenHandler from "./jwtToken.js"
 import {error , warn} from "../utils/logger.js"
 import dbHandler from "../database/handler.js"
 import permissionHandler from "../utils/permessions.js"
+import fetchToken from "../utils/fetchToken.js"
 
 
 const Authorize = (permission)=>{
@@ -9,23 +10,11 @@ const Authorize = (permission)=>{
     const middleware = async (req , res , next)=>{
             try { 
 
-                const authHeader = req.headers.authorization;
-               
-                
-                if (!authHeader  ) { 
-                return  res.status(401).json({state:false , reason : "no.token.provided"})
+                const data = fetchToken(req)
+                if (!data.state) { 
+                    return res.status(401).json(data)
                 }
-                const headerParts = authHeader.split(/\s+/)
-                const token = headerParts[1]
-                if (headerParts.length !== 2 || headerParts[0].toLowerCase() !== "bearer" || !token) {
-                     return res.status(401).json({state:false , reason : "authorization.header.malformed"})
-                } 
-                
-                if (token.split(".").length !== 3) { 
-                    return res.status(401).json({state: false , reason :"jwt.token.malformed !"})
-
-                }
-            
+                const token = data.token
                 const decoded = new TokenHandler().verify(token)
                 if(!decoded.state) { 
                     return res.status(401).json({state: false , reason :"invalid Signature !"})

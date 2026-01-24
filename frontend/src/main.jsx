@@ -1,9 +1,17 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 
+import Router from  "./router/appRouter.jsx"
+
+import LanguageSwitcher from "@comp/languageSwitcher.jsx";
+
+import { BrowserRouter } from 'react-router-dom'
+
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+  
+  <BrowserRouter>
+            <LanguageSwitcher/>
+            <App />
+  </BrowserRouter>
+
 )

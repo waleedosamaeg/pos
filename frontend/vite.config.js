@@ -12,7 +12,10 @@ export default defineConfig({
         "@font" : path.resolve(__dirname , "src/assets/static/fonts"),
         "@lang" : path.resolve(__dirname , "src/assets/langs"),
         "@context" : path.resolve(__dirname , "src/context"),
-        "@config" : path.resolve(__dirname , "src/config")
+        "@config" : path.resolve(__dirname , "src/config"),
+        "@page" : path.resolve(__dirname , "src/pages/"),
+        "@logo" : path.resolve(__dirname , "src/assets/static/imgs/logo"),
+        "@util" : path.resolve(__dirname, 'src/utils/'),
 
       }
   }
