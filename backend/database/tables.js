@@ -62,36 +62,38 @@ const  Tables = [
 
     );
     `,
-    `CREATE TABLE IF NOT EXISTS product_batches(
-        id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-        product_id INT UNSIGNED NOT NULL ,
-        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE, 
-        unit_id INT UNSIGNED NOT NULL , 
-        expiry_date DATE NOT NULL DEFAULT "2100-01-01",
-        cost_price DECIMAL (10,2) NOT NULL , 
-        selling_price DECIMAL (10,2) NOT NULL , 
-        stock DECIMAL (10,3) NOT NULL DEFAULT 0,
-        barcode VARCHAR(45) UNIQUE,
-        status ENUM("active" , "sold_out"  , "expired" , "archieved" ) DEFAULT "active",
-        created_by INT UNSIGNED ,
-        FOREIGN KEY (created_by) REFERENCES accounts(id),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
-        INDEX idx_product_id (product_id),
-        INDEX idx_expiry_date (expiry_date),
-        INDEX idx_stock (stock),
-        INDEX idx_barcode (barcode),
-        INDEX idx_selling_price (selling_price)
-
-    ); 
-    `,
-    `CREATE TABLE IF NOT EXISTS units (
+     `CREATE TABLE IF NOT EXISTS units (
         id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT , 
         name VARCHAR (45) NOT NULL ,
         ar_name VARCHAR(45) NOT NULL , 
         description VARCHAR (255)
     );
     `,
+    `CREATE TABLE IF NOT EXISTS product_batches(
+        id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+        product_id INT UNSIGNED NOT NULL ,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE, 
+        unit_id INT UNSIGNED NOT NULL , 
+        FOREIGN KEY (unit_id) REFERENCES units(id) ON DELETE RESTRICT,
+        expiry_date DATE NOT NULL DEFAULT "2100-01-01",
+        cost_price DECIMAL (10,2) NOT NULL , 
+        selling_price DECIMAL (10,2) NOT NULL , 
+        stock DECIMAL (10,3) NOT NULL DEFAULT 0,
+        shortcut VARCHAR (10) UNIQUE NULL , 
+        status ENUM("active" , "sold_out"  , "expired" , "archieved" ) DEFAULT "active",
+        created_by INT UNSIGNED ,
+        FOREIGN KEY (created_by) REFERENCES accounts(id),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(),
+        INDEX idx_product_id (product_id),
+        INDEX idx_expiry_date (expiry_date),
+        INDEX idx_stock (stock),
+        INDEX idx_selling_price (selling_price),
+        INDEX idx_shortcut (shortcut)
+        
+    ); 
+    `,
+   
     `CREATE TABLE IF NOT EXISTS product_units (
         id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY ,
         product_id INT UNSIGNED NOT NULL ,

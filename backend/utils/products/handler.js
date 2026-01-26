@@ -1,5 +1,6 @@
 import db_handler from "../../database/handler.js"
 import {error} from "../logger.js"
+import UnitHandler from "./units.js"
 
 class Product    { 
 
@@ -18,7 +19,13 @@ class Product    {
      
            
     }
-    async add({name=null  , ar_name = null , category= 1 , description  = null}) { 
+    async add({name=null  , ar_name = null , category= 1 , description  = null  , units }) { 
+        
+
+        const connection = await db_handler.getConnection();
+        connection.beginTransaction()
+
+      
         try { 
             if (!name && !ar_name ) {
                 return { state : false , reason :"no.name.provided"}
@@ -29,33 +36,44 @@ class Product    {
             if (!name && ar_name) { 
                 name = ar_name
             }
+
+
            
             
-            const [rows] = await db_handler.execute(`INSERT INTO products (name , ar_name , category_id , description) VALUES ( ? , ? , ? , ?)` , [name , ar_name , category , description])
+            const [rows] = await connection.execute(`INSERT INTO products (name , ar_name , category_id , description) VALUES ( ? , ? , ? , ?)` , [name , ar_name , category , description])
 
             
-            if (rows && rows.affectedRows > 0) { 
-                return {state :true  , data : {productId : rows.insertId}}
+            if (!rows || rows.affectedRows === 0 ) { 
+                    connection.rollback()
+                    return {state : false , reason : "insert.failed"}
+                }
+
+            const product_id = rows.insertId
+
+            const addUnit = await new UnitHandler().add({product_id , units , con:connection})
+            if(!addUnit.state) { 
+                await connection.rollback()
+                return addUnit
             }
-      
-            return {state : false , reason : "insert.failed"}
+            await connection.commit()
+            return addUnit
+            
+            
+            
 
         }catch (e) { 
             error(e);
+            connection.rollback()
             return {state : false , reason : "internal.error"}
+        }finally{
+            connection.release()
         }
        
     }
     
     async remove({id}) { 
         try { 
-            // if (!id) {
-            //     return {state : false , reason : "no.product.id.provided"}
-            // }
-            
-            // if (!Number.isInteger(id)) { 
-            //     return {state : false , reason :  "invalid.id"}
-            // }
+       
             const checkId = this.#checkId(id)
             if(!checkId.state)  { 
                 return checkId

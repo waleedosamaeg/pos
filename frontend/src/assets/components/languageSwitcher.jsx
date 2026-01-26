@@ -23,7 +23,7 @@ export default function LanguageSwitcher() {
         className={i18n.language === 'ar' ? 'active' : ''}
         onClick={() => changeLanguage('ar')}
       >
-        ع
+        
       </button>
     </div>
   );

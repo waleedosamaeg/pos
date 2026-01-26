@@ -1,5 +1,5 @@
 import TokenHandler from "./jwtToken.js"
-import {error , warn} from "../utils/logger.js"
+import {error , warn , info} from "../utils/logger.js"
 import dbHandler from "../database/handler.js"
 import permissionHandler from "../utils/permessions.js"
 import fetchToken from "../utils/fetchToken.js"
@@ -20,7 +20,8 @@ const Authorize = (permission)=>{
                     return res.status(401).json({state: false , reason :"invalid Signature !"})
                 }
 
-                if (decoded.super_admin === true) { 
+                if (decoded?.data?.super_admin === 1) { 
+                    info(`Bypassing Permission '${permission}' by User '${decoded.data.username}' due to 'super_admin' Previllage  `)
                     return next()
                 }
 

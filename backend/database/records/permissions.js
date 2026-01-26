@@ -10,6 +10,8 @@ const records = [
     `INSERT INTO permissions (id , name , description , ar_name , category) values (8, 'product.remove' , 'remove existing product' , 'حذف منتج ' ,'products')` ,
     `INSERT INTO permissions (id , name , description , ar_name , category) values (9, 'product.edit' , 'edit existing product' , 'تعديل بيانات منتج ' ,'products')` ,
     `INSERT INTO permissions (id , name , description , ar_name , category) values (10, 'product.activate' , 'deactivate existing product' , 'ايقاف منتج' ,'products')` ,
+    `INSERT INTO permissions (id , name , description , ar_name , category) values (11, 'batch.add' , 'Add new Batch for product' , 'اضافة كمية جديدة من المنتج' ,'products')` ,
+
     
     //  manager permissions
 

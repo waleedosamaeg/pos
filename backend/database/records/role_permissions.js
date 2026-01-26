@@ -10,6 +10,7 @@ const records = [
     `INSERT INTO role_permissions (role_id , permission_id) values (3 , 8)`,
     `INSERT INTO role_permissions (role_id , permission_id) values (3 , 9)`,
     `INSERT INTO role_permissions (role_id , permission_id) values (3 , 10)`,
+    `INSERT INTO role_permissions (role_id , permission_id) values (3 , 11)`,
     
     // add manager permissions
 

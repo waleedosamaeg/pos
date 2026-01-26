@@ -4,6 +4,8 @@ import rolesRecords from "./records/roles.js"
 import rolePermissionsRecords from "./records/role_permissions.js"
 import accountsRecords from "./records/accounts.js"
 import extraPermissionsRecords from "./records/extraPermissions.js"
+import unitsRecords from "./records/units.js"
+
 import mysql from "mysql2/promise"
 import { error as e  , info } from "../utils/logger.js"
 
@@ -31,32 +33,39 @@ export class Database {
             })
 
         
+            info("Adding Default tables Records ↓ ")
             
             // add Permessions table  default records
-            info("Adding Default Permessions  Records ...")
+            
+            info("Adding `Permessions`  Records ...")
             permissionsRecords.map(async (item , index , srcArray)=>{
                 await connection.execute( item , [])
             })
             // add roles table default records
-            info("Adding Default Roles  Records ...")
+            info("Adding  `Roles`  Records ...")
             rolesRecords.map(async(item)=>{
                 await connection.execute(item , [])
             })
 
             // add role_permissions table default records 
-            info("Adding Default role_permissions  Records ...")
+            info("Adding `role_permissions`  Records ...")
             rolePermissionsRecords.map(async(item)=>{
                 await connection.execute(item , [])
             })
            // add accounts   default records 
-            info("Adding Default accounts  Records ...")
+            info("Adding `accounts`  Records ...")
             accountsRecords.map(async(item)=>{
                 await connection.execute(item , [])
             })
 
             // add extra_permissions default records 
-            info("Adding extra_permissions default  Records ...")
+            info("Adding `extra_permissions` default  Records ...")
             extraPermissionsRecords.map(async(item)=>{
+                await connection.execute(item , [])
+            })
+            // add units default records 
+            info("Adding `units` default  Records ...")
+            unitsRecords.map(async(item)=>{
                 await connection.execute(item , [])
             })
 

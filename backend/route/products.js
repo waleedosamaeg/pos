@@ -12,9 +12,9 @@ Router.post("/product/add" , PermAuth("product.add"),  async (req , res , next)=
             const ar_name = req.body?.ar_name; 
             const desc = req.body?.desc;
             const category = req.body?.category ;
-
+            const units = req.body?.units;
         
-            const add =  await handler.add({name  , ar_name , category , desc})
+            const add =  await handler.add({name  , ar_name , category , desc , units })
             
             return res.status(200).json(add) 
 
