@@ -12,7 +12,7 @@ async function Main() {
     // await db.setup()
 
 
-    const app = new express()
+    const app =  express()
     // middlewares 
     app.use(express.json());
     app.use(express.urlencoded());

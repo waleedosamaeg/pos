@@ -16,12 +16,11 @@ Router.post("/batch/add"  , PermAuth("batch.add"),  async (req , res , next)=>{
         const cost_price = req.body?.cost_price 
         const selling_price = req.body?.selling_price
         const stock = req.body?.stock
-        const shortcut = req.body?.shortcut
         const no_profit = req.body?.no_profit
         const {token} =  fetchToken(req)
         const {data : {id:user}} = new TokenHanlder().verify(token)
 
-        const BatchHanlder = await new Batch().add({product_id , unit_id , expiry_date , cost_price , selling_price , stock , shortcut , created_by:user , no_profit})
+        const BatchHanlder = await new Batch().add({product_id , unit_id , expiry_date , cost_price , selling_price , stock  , created_by:user , no_profit})
         if (!BatchHanlder.status && BatchHanlder.reason === "internal.error")  { 
             return res.status(500).json(BatchHanlder)
         }

@@ -54,11 +54,13 @@ const  Tables = [
         name VARCHAR(45) NOT NULL ,
         ar_name VARCHAR(45) NOT NULL , 
         description TEXT ,
+        shortcut VARCHAR (20) NULL UNIQUE,
         category_id INT UNSIGNED DEFAULT 1 , 
         is_active BOOLEAN DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
         INDEX idx_product_name (name),
-        INDEX idx_product_ar_name (ar_name)
+        INDEX idx_product_ar_name (ar_name),
+        INDEX idx_shortcut (shortcut)
 
     );
     `,
@@ -79,7 +81,6 @@ const  Tables = [
         cost_price DECIMAL (10,2) NOT NULL , 
         selling_price DECIMAL (10,2) NOT NULL , 
         stock DECIMAL (10,3) NOT NULL DEFAULT 0,
-        shortcut VARCHAR (10) UNIQUE NULL , 
         status ENUM("active" , "sold_out"  , "expired" , "archieved" ) DEFAULT "active",
         created_by INT UNSIGNED ,
         FOREIGN KEY (created_by) REFERENCES accounts(id),
@@ -88,8 +89,8 @@ const  Tables = [
         INDEX idx_product_id (product_id),
         INDEX idx_expiry_date (expiry_date),
         INDEX idx_stock (stock),
-        INDEX idx_selling_price (selling_price),
-        INDEX idx_shortcut (shortcut)
+        INDEX idx_selling_price (selling_price)
+        
         
     ); 
     `,

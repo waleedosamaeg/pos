@@ -1,6 +1,8 @@
 import db_handler from "../../database/handler.js"
 import {error} from "../logger.js"
 import UnitHandler from "./units.js"
+import Shortcut from "../shortcut.js"
+
 
 class Product    { 
 
@@ -19,7 +21,7 @@ class Product    {
      
            
     }
-    async add({name=null  , ar_name = null , category= 1 , description  = null  , units }) { 
+    async add({name=null  , ar_name = null , category= 1 , description  = null  , shortcut  , units }) { 
         
 
         const connection = await db_handler.getConnection();
@@ -36,11 +38,19 @@ class Product    {
             if (!name && ar_name) { 
                 name = ar_name
             }
+            const trimmedShortcut = shortcut ? shortcut.trim() : null
+
+            if (trimmedShortcut) { 
+                const exists = await new Shortcut().exists(trimmedShortcut)
+                if (!exists.state)  return exists
+            }
+
+
 
 
            
             
-            const [rows] = await connection.execute(`INSERT INTO products (name , ar_name , category_id , description) VALUES ( ? , ? , ? , ?)` , [name , ar_name , category , description])
+            const [rows] = await connection.execute(`INSERT INTO products (name , ar_name , category_id , shortcut ,description) VALUES ( ? , ? , ? , ? ,  ?)` , [name , ar_name , category  , trimmedShortcut, description])
 
             
             if (!rows || rows.affectedRows === 0 ) { 

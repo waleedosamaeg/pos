@@ -12,7 +12,7 @@ class Shortcut {
             if (!shortcut || !shortcut?.trim()) { 
                 return { state : false , reason : "no.shortcut"}
             }
-            const [rows] = await db_handler.execute(`SELECT shortcut from product_batches where shortcut = ?` , [shortcut.trim()])
+            const [rows] = await db_handler.execute(`SELECT shortcut from products where shortcut = ?` , [shortcut.trim()])
             if(rows.length > 0) {
                 return { state : false , reason : "shortcut.exists"}
             }
