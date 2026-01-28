@@ -11,24 +11,25 @@ class Authenticate {
         return token
     }
 
-    checkToken() { 
+     async checkToken() { 
         const endpoint = `${variables.apiUrl}/auth/verify`;
         const token = this.#getToken();
         if (!token) { 
             return {state : false }
+
         }
-        const requester = async ()=>{
-            const headers = {
-                Authorization : `Bearer ${token}`
-            }
-            const data = {}
-            
-            const request = await new RequestHandler().post(endpoint , data , headers)
-            const response = request.data 
-            return response
-            
+    
+        const headers = {
+            Authorization : `Bearer ${token}`
         }
-        return requester()
+        const data = {}
+        
+        const response = await new RequestHandler().post(endpoint , data , headers)
+        return response
+        
+    
+    
+       
 
     }
 

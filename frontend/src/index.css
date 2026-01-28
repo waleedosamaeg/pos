@@ -1,0 +1,349 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ERP Desktop Application Design System */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    /* Core Desktop Colors - Dark Theme */
+    --background: 220 20% 10%;
+    --foreground: 210 20% 92%;
+
+    --card: 220 18% 13%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 220 20% 12%;
+    --popover-foreground: 210 20% 92%;
+
+    /* Primary - Teal accent for actions */
+    --primary: 180 65% 45%;
+    --primary-foreground: 220 20% 8%;
+
+    /* Secondary - Subtle dark surfaces */
+    --secondary: 220 18% 18%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 220 15% 16%;
+    --muted-foreground: 215 15% 55%;
+
+    /* Accent - Hover states */
+    --accent: 220 18% 20%;
+    --accent-foreground: 210 20% 92%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 20% 98%;
+
+    /* UI Elements */
+    --border: 220 15% 22%;
+    --input: 220 18% 15%;
+    --ring: 180 65% 45%;
+
+    --radius: 0.25rem;
+
+    /* Custom ERP tokens */
+    --menu-bar: 220 20% 8%;
+    --menu-bar-foreground: 210 15% 75%;
+    --menu-hover: 220 18% 15%;
+    --tab-bar: 220 18% 11%;
+    --tab-active: 220 18% 16%;
+    --tab-hover: 220 18% 14%;
+    --workspace: 220 20% 9%;
+    --grid-header: 220 18% 14%;
+    --grid-row-hover: 220 18% 12%;
+    --grid-row-selected: 180 40% 18%;
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    --info: 199 89% 48%;
+
+    /* Sidebar - match desktop aesthetic */
+    --sidebar-background: 220 20% 8%;
+    --sidebar-foreground: 210 15% 75%;
+    --sidebar-primary: 180 65% 45%;
+    --sidebar-primary-foreground: 220 20% 8%;
+    --sidebar-accent: 220 18% 15%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 180 65% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Disable text selection for desktop app feel */
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+@layer components {
+  /* Menu Bar Styles */
+  .menu-bar {
+    @apply h-7 flex flex-row items-center px-2 gap-0.5 flex-nowrap;
+    background: hsl(var(--menu-bar));
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  .menu-item {
+    @apply px-3 py-1 text-xs font-medium cursor-pointer rounded-sm transition-colors;
+    color: hsl(var(--menu-bar-foreground));
+  }
+
+  .menu-item:hover {
+    background: hsl(var(--menu-hover));
+    color: hsl(var(--foreground));
+  }
+
+  .menu-item.active {
+    background: hsl(var(--menu-hover));
+    color: hsl(var(--foreground));
+  }
+
+  /* Tab Bar Styles */
+  .tab-bar {
+    @apply h-9 flex items-end px-1 gap-0.5 overflow-x-auto;
+    background: hsl(var(--tab-bar));
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  .tab-item {
+    @apply flex items-center gap-2 px-3 py-1.5 text-xs font-medium cursor-pointer rounded-t-md transition-all;
+    background: transparent;
+    color: hsl(var(--muted-foreground));
+    max-width: 180px;
+    min-width: 100px;
+  }
+
+  .tab-item:hover {
+    background: hsl(var(--tab-hover));
+    color: hsl(var(--foreground));
+  }
+
+  .tab-item.active {
+    background: hsl(var(--tab-active));
+    color: hsl(var(--foreground));
+    border-bottom: 2px solid hsl(var(--primary));
+  }
+
+  .tab-close {
+    @apply p-0.5 rounded-sm opacity-60 hover:opacity-100 hover:bg-destructive/20 transition-all;
+  }
+
+  /* Workspace Styles */
+  .workspace {
+    @apply flex-1 overflow-hidden;
+    background: hsl(var(--workspace));
+  }
+
+  /* Data Grid Styles */
+  .data-grid {
+    @apply w-full text-xs;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+  }
+
+  .data-grid-header {
+    @apply sticky top-0 z-10;
+    background: hsl(var(--grid-header));
+  }
+
+  .data-grid-header th {
+    @apply px-3 py-2 text-left font-semibold uppercase tracking-wider border-b;
+    color: hsl(var(--muted-foreground));
+    border-color: hsl(var(--border));
+    font-size: 10px;
+  }
+
+  .data-grid-row {
+    @apply transition-colors cursor-pointer;
+    border-bottom: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .data-grid-row:hover {
+    background: hsl(var(--grid-row-hover));
+  }
+
+  .data-grid-row.selected {
+    background: hsl(var(--grid-row-selected));
+  }
+
+  .data-grid-row td {
+    @apply px-3 py-2;
+  }
+
+  /* Input Styles for ERP */
+  .erp-input {
+    @apply w-full px-3 py-2 text-sm rounded-sm border transition-all;
+    background: hsl(var(--input));
+    border-color: hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  .erp-input:focus {
+    @apply outline-none ring-1;
+    ring-color: hsl(var(--ring));
+    border-color: hsl(var(--ring));
+  }
+
+  .erp-input::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Button Variants */
+  .erp-btn {
+    @apply px-4 py-2 text-xs font-semibold uppercase tracking-wide rounded-sm transition-all;
+    @apply flex items-center justify-center gap-2;
+  }
+
+  .erp-btn-primary {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .erp-btn-primary:hover {
+    background: hsl(180 65% 40%);
+  }
+
+  .erp-btn-secondary {
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .erp-btn-secondary:hover {
+    background: hsl(var(--accent));
+  }
+
+  .erp-btn-danger {
+    background: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+  }
+
+  .erp-btn-danger:hover {
+    background: hsl(0 72% 45%);
+  }
+
+  .erp-btn-success {
+    background: hsl(var(--success));
+    color: hsl(220 20% 8%);
+  }
+
+  .erp-btn-success:hover {
+    background: hsl(142 71% 40%);
+  }
+
+  /* Panel Styles */
+  .erp-panel {
+    @apply rounded-sm border;
+    background: hsl(var(--card));
+    border-color: hsl(var(--border));
+  }
+
+  .erp-panel-header {
+    @apply px-4 py-2 border-b font-semibold text-sm uppercase tracking-wide;
+    background: hsl(var(--grid-header));
+    border-color: hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Keyboard shortcut badge */
+  .kbd {
+    @apply px-1.5 py-0.5 text-[10px] font-mono rounded;
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    border: 1px solid hsl(var(--border));
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+
+  /* Hide scrollbar for tab bar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Dropdown Menu Styles */
+  .dropdown-menu {
+    @apply absolute top-full left-0 min-w-48 py-1 rounded-sm shadow-xl z-50;
+    background: hsl(var(--popover));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .dropdown-item {
+    @apply flex items-center justify-between px-3 py-1.5 text-xs cursor-pointer transition-colors;
+    color: hsl(var(--popover-foreground));
+  }
+
+  .dropdown-item:hover {
+    background: hsl(var(--accent));
+  }
+
+  .dropdown-separator {
+    @apply my-1 border-t;
+    border-color: hsl(var(--border));
+  }
+
+  /* Status indicators */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-dot.success {
+    background: hsl(var(--success));
+  }
+
+  .status-dot.warning {
+    background: hsl(var(--warning));
+  }
+
+  .status-dot.danger {
+    background: hsl(var(--destructive));
+  }
+
+  /* Amount/Number styling */
+  .amount-positive {
+    color: hsl(var(--success));
+  }
+
+  .amount-negative {
+    color: hsl(var(--destructive));
+  }
+
+  .amount-currency {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+}

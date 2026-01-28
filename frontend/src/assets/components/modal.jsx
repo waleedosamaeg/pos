@@ -1,11 +1,17 @@
-import { Modal, ButtonToolbar, Button, SegmentedControl, Placeholder, Text } from 'rsuite';
+import { Modal, ButtonToolbar, Button, SegmentedControl, Placeholder, Text , HStack } from 'rsuite';
+import RemindFillIcon from '@rsuite/icons/RemindFill';
+
 import React, { useState } from 'react';
-import { useAppContext } from '@context/appContext.jsx';
+import { useUiContext } from '@context/uiContext.jsx';
+import { useTranslation } from 'react-i18next';
 
 const Modall = () => {
-    const {state , dispatch} = useAppContext()
+    const {state , dispatch} = useUiContext()
     const [open, setOpen] = React.useState(true);
     const [backdrop, setBackdrop] = React.useState('static');
+    const {t , i18n } = useTranslation()
+    const direction = i18n.language === "ar" ? "rtl" : "ltr"
+    
     const handleClose = () => {
         setOpen(false);
         dispatch({type:"remove.modal"})
@@ -15,17 +21,18 @@ const Modall = () => {
   return (
     <>
 
-      <Modal backdrop={backdrop} keyboard={false} open={open} onClose={handleClose}>
+      <Modal backdrop={backdrop} keyboard={true} open={open} onClose={handleClose} style={{direction}}>
         <Modal.Header>
+         
           <Modal.Title>{state.modal.title || "Title"}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          <h1>{state.modal.body || "Body"}</h1>
+          <span>{state.modal.text || "default text"}</span>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={handleClose} appearance="primary">
-            Ok
+            {i18n.language === "ar"  ? "حسناّ"  : "ok"}
           </Button>
         </Modal.Footer>
       </Modal>

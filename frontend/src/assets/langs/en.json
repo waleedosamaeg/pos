@@ -1,6 +1,16 @@
 {
     "loader" : {
         "text" : "loading"
+    },"handler" : {
+            "error" : {
+                "unexpected" : {
+                    "title" : "unexpected error !" , 
+                    "Text" : "Unexpected Error Occured , Please Try again or Contact the adminstrator !"
+                },
+                "title" : "error"
+            },"success"  : {
+                "title" : "success"
+            }
     },
     "login": {
         "title": "Login",

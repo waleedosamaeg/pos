@@ -1,3 +1,4 @@
+@import "tailwindcss";
 @font-face {
     font-family: "quicksand";
     src: url("@font/Quicksand/Quicksand-VariableFont_wght.ttf") format("truetype");
