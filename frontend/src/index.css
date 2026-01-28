@@ -1,82 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ERP Desktop Application Design System */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root {
+  /* Core Desktop Colors - Dark Theme */
+  --background: 220 20% 10%;
+  --foreground: 210 20% 92%;
 
-@layer base {
-  :root {
-    /* Core Desktop Colors - Dark Theme */
-    --background: 220 20% 10%;
-    --foreground: 210 20% 92%;
+  --card: 220 18% 13%;
+  --card-foreground: 210 20% 92%;
 
-    --card: 220 18% 13%;
-    --card-foreground: 210 20% 92%;
+  --popover: 220 20% 12%;
+  --popover-foreground: 210 20% 92%;
 
-    --popover: 220 20% 12%;
-    --popover-foreground: 210 20% 92%;
+  /* Primary - Teal accent for actions */
+  --primary: 180 65% 45%;
+  --primary-foreground: 220 20% 8%;
 
-    /* Primary - Teal accent for actions */
-    --primary: 180 65% 45%;
-    --primary-foreground: 220 20% 8%;
+  /* Secondary - Subtle dark surfaces */
+  --secondary: 220 18% 18%;
+  --secondary-foreground: 210 20% 85%;
 
-    /* Secondary - Subtle dark surfaces */
-    --secondary: 220 18% 18%;
-    --secondary-foreground: 210 20% 85%;
+  --muted: 220 15% 16%;
+  --muted-foreground: 215 15% 55%;
 
-    --muted: 220 15% 16%;
-    --muted-foreground: 215 15% 55%;
+  /* Accent - Hover states */
+  --accent: 220 18% 20%;
+  --accent-foreground: 210 20% 92%;
 
-    /* Accent - Hover states */
-    --accent: 220 18% 20%;
-    --accent-foreground: 210 20% 92%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 210 20% 98%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 20% 98%;
+  /* UI Elements */
+  --border: 220 15% 22%;
+  --input: 220 18% 15%;
+  --ring: 180 65% 45%;
 
-    /* UI Elements */
-    --border: 220 15% 22%;
-    --input: 220 18% 15%;
-    --ring: 180 65% 45%;
+  --radius: 0.25rem;
 
-    --radius: 0.25rem;
+  /* Custom ERP tokens */
+  --menu-bar: 220 20% 8%;
+  --menu-bar-foreground: 210 15% 75%;
+  --menu-hover: 220 18% 15%;
+  --tab-bar: 220 18% 11%;
+  --tab-active: 220 18% 16%;
+  --tab-hover: 220 18% 14%;
+  --workspace: 220 20% 9%;
+  --grid-header: 220 18% 14%;
+  --grid-row-hover: 220 18% 12%;
+  --grid-row-selected: 180 40% 18%;
+  --success: 142 71% 45%;
+  --warning: 38 92% 50%;
+  --info: 199 89% 48%;
 
-    /* Custom ERP tokens */
-    --menu-bar: 220 20% 8%;
-    --menu-bar-foreground: 210 15% 75%;
-    --menu-hover: 220 18% 15%;
-    --tab-bar: 220 18% 11%;
-    --tab-active: 220 18% 16%;
-    --tab-hover: 220 18% 14%;
-    --workspace: 220 20% 9%;
-    --grid-header: 220 18% 14%;
-    --grid-row-hover: 220 18% 12%;
-    --grid-row-selected: 180 40% 18%;
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
-    --info: 199 89% 48%;
-
-    /* Sidebar - match desktop aesthetic */
-    --sidebar-background: 220 20% 8%;
-    --sidebar-foreground: 210 15% 75%;
-    --sidebar-primary: 180 65% 45%;
-    --sidebar-primary-foreground: 220 20% 8%;
-    --sidebar-accent: 220 18% 15%;
-    --sidebar-accent-foreground: 210 20% 92%;
-    --sidebar-border: 220 15% 18%;
-    --sidebar-ring: 180 65% 45%;
-  }
+  /* Sidebar - match desktop aesthetic */
+  --sidebar-background: 220 20% 8%;
+  --sidebar-foreground: 210 15% 75%;
+  --sidebar-primary: 180 65% 45%;
+  --sidebar-primary-foreground: 220 20% 8%;
+  --sidebar-accent: 220 18% 15%;
+  --sidebar-accent-foreground: 210 20% 92%;
+  --sidebar-border: 220 15% 18%;
+  --sidebar-ring: 180 65% 45%;
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {
-    @apply bg-background text-foreground;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -92,82 +91,165 @@
 @layer components {
   /* Menu Bar Styles */
   .menu-bar {
-    @apply h-7 flex flex-row items-center px-2 gap-0.5 flex-nowrap;
-    background: hsl(var(--menu-bar));
+    height: 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    gap: 0.25rem;
+    flex-wrap: nowrap;
+    background: linear-gradient(180deg, hsl(220 20% 12%) 0%, hsl(220 20% 8%) 100%);
     border-bottom: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
   }
 
   .menu-item {
-    @apply px-3 py-1 text-xs font-medium cursor-pointer rounded-sm transition-colors;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     color: hsl(var(--menu-bar-foreground));
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .menu-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(180, 150, 255, 0.1) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 
   .menu-item:hover {
-    background: hsl(var(--menu-hover));
+    background: linear-gradient(135deg, hsl(220 18% 18%) 0%, hsl(220 18% 15%) 100%);
     color: hsl(var(--foreground));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(180, 100, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .menu-item:hover::before {
+    opacity: 1;
   }
 
   .menu-item.active {
-    background: hsl(var(--menu-hover));
-    color: hsl(var(--foreground));
+    background: linear-gradient(135deg, hsl(180 65% 45%) 0%, hsl(180 55% 40%) 100%);
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 6px 16px rgba(0, 180, 220, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+  }
+
+  .menu-item.active::before {
+    opacity: 1;
+  }
+
+  .menu-item:active {
+    transform: translateY(0);
   }
 
   /* Tab Bar Styles */
   .tab-bar {
-    @apply h-9 flex items-end px-1 gap-0.5 overflow-x-auto;
-    background: hsl(var(--tab-bar));
-    border-bottom: 1px solid hsl(var(--border));
+    height: 2.5rem;
+    display: flex;
+    align-items: flex-end;
+    padding: 0.5rem 0.25rem 0;
+    gap: 0.25rem;
+    overflow-x: auto;
+    background: linear-gradient(180deg, hsl(220 18% 12%) 0%, hsl(220 18% 10%) 100%);
+    border-bottom: 2px solid hsl(var(--border));
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .tab-item {
-    @apply flex items-center gap-2 px-3 py-1.5 text-xs font-medium cursor-pointer rounded-t-md transition-all;
-    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 0.5rem 0.5rem 0 0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background: hsl(220 18% 14% / 0.5);
     color: hsl(var(--muted-foreground));
-    max-width: 180px;
+    max-width: 200px;
     min-width: 100px;
+    position: relative;
+    border: 1px solid hsl(var(--border) / 0.3);
+    border-bottom: none;
   }
 
   .tab-item:hover {
-    background: hsl(var(--tab-hover));
+    background: linear-gradient(135deg, hsl(220 18% 18%) 0%, hsl(220 18% 16%) 100%);
     color: hsl(var(--foreground));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 100, 180, 0.2);
   }
 
   .tab-item.active {
-    background: hsl(var(--tab-active));
+    background: linear-gradient(180deg, hsl(220 18% 18%) 0%, hsl(220 18% 14%) 100%);
     color: hsl(var(--foreground));
-    border-bottom: 2px solid hsl(var(--primary));
+    border-color: hsl(var(--primary));
+    box-shadow: 0 -4px 16px rgba(0, 180, 220, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-weight: 600;
+    border-bottom: 3px solid hsl(var(--primary));
   }
 
   .tab-close {
-    @apply p-0.5 rounded-sm opacity-60 hover:opacity-100 hover:bg-destructive/20 transition-all;
+    padding: 0.25rem 0.375rem;
+    border-radius: 0.25rem;
+    opacity: 0.6;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-left: 0.25rem;
+  }
+
+  .tab-close:hover {
+    opacity: 1;
+    background: hsl(0 72% 51% / 0.2);
   }
 
   /* Workspace Styles */
   .workspace {
-    @apply flex-1 overflow-hidden;
+    flex: 1;
+    overflow: hidden;
     background: hsl(var(--workspace));
   }
 
   /* Data Grid Styles */
   .data-grid {
-    @apply w-full text-xs;
+    width: 100%;
+    font-size: 0.75rem;
     font-family: 'JetBrains Mono', 'Consolas', monospace;
   }
 
   .data-grid-header {
-    @apply sticky top-0 z-10;
+    position: sticky;
+    top: 0;
+    z-index: 10;
     background: hsl(var(--grid-header));
   }
 
   .data-grid-header th {
-    @apply px-3 py-2 text-left font-semibold uppercase tracking-wider border-b;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid hsl(var(--border));
     color: hsl(var(--muted-foreground));
-    border-color: hsl(var(--border));
     font-size: 10px;
   }
 
   .data-grid-row {
-    @apply transition-colors cursor-pointer;
+    transition: background-color 0.2s;
+    cursor: pointer;
     border-bottom: 1px solid hsl(var(--border) / 0.5);
   }
 
@@ -180,20 +262,24 @@
   }
 
   .data-grid-row td {
-    @apply px-3 py-2;
+    padding: 0.5rem 0.75rem;
   }
 
   /* Input Styles for ERP */
   .erp-input {
-    @apply w-full px-3 py-2 text-sm rounded-sm border transition-all;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    border: 1px solid hsl(var(--border));
+    transition: all 0.2s;
     background: hsl(var(--input));
-    border-color: hsl(var(--border));
     color: hsl(var(--foreground));
   }
 
   .erp-input:focus {
-    @apply outline-none ring-1;
-    ring-color: hsl(var(--ring));
+    outline: none;
+    ring: 1px solid hsl(var(--ring));
     border-color: hsl(var(--ring));
   }
 
@@ -203,8 +289,19 @@
 
   /* Button Variants */
   .erp-btn {
-    @apply px-4 py-2 text-xs font-semibold uppercase tracking-wide rounded-sm transition-all;
-    @apply flex items-center justify-center gap-2;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0.25rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border: none;
   }
 
   .erp-btn-primary {
@@ -246,21 +343,28 @@
 
   /* Panel Styles */
   .erp-panel {
-    @apply rounded-sm border;
+    border-radius: 0.25rem;
+    border: 1px solid hsl(var(--border));
     background: hsl(var(--card));
-    border-color: hsl(var(--border));
   }
 
   .erp-panel-header {
-    @apply px-4 py-2 border-b font-semibold text-sm uppercase tracking-wide;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid hsl(var(--border));
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     background: hsl(var(--grid-header));
-    border-color: hsl(var(--border));
     color: hsl(var(--muted-foreground));
   }
 
   /* Keyboard shortcut badge */
   .kbd {
-    @apply px-1.5 py-0.5 text-[10px] font-mono rounded;
+    padding: 0.125rem 0.375rem;
+    font-size: 10px;
+    font-family: monospace;
+    border-radius: 0.25rem;
     background: hsl(var(--muted));
     color: hsl(var(--muted-foreground));
     border: 1px solid hsl(var(--border));
@@ -297,28 +401,158 @@
 
   /* Dropdown Menu Styles */
   .dropdown-menu {
-    @apply absolute top-full left-0 min-w-48 py-1 rounded-sm shadow-xl z-50;
-    background: hsl(var(--popover));
-    border: 1px solid hsl(var(--border));
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 12rem;
+    padding: 0.5rem 0;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 20px -5px rgba(0, 180, 220, 0.1);
+    z-index: 50;
+    background: linear-gradient(135deg, hsl(220 18% 16%) 0%, hsl(220 18% 14%) 100%);
+    border: 1px solid hsl(var(--border) / 0.6);
+    backdrop-filter: blur(10px);
+    animation: slideDown 0.2s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .dropdown-item {
-    @apply flex items-center justify-between px-3 py-1.5 text-xs cursor-pointer transition-colors;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
     color: hsl(var(--popover-foreground));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dropdown-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: linear-gradient(180deg, hsl(180 65% 45%), transparent);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+    transform-origin: left;
   }
 
   .dropdown-item:hover {
-    background: hsl(var(--accent));
+    background: linear-gradient(90deg, hsl(220 18% 20%) 0%, hsl(220 18% 18%) 100%);
+    padding-left: 1.25rem;
+    color: hsl(180 65% 45%);
+  }
+
+  .dropdown-item:hover::before {
+    transform: scaleX(1);
   }
 
   .dropdown-separator {
-    @apply my-1 border-t;
-    border-color: hsl(var(--border));
+    margin: 0.375rem 0;
+    border-top: 1px solid hsl(var(--border) / 0.4);
+  }
+
+  /* Buttons with modern effects */
+  .erp-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0.375rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .erp-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .erp-btn-primary {
+    background: linear-gradient(135deg, hsl(180 65% 45%) 0%, hsl(180 55% 40%) 100%);
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 4px 12px rgba(0, 180, 220, 0.3);
+  }
+
+  .erp-btn-primary:hover {
+    background: linear-gradient(135deg, hsl(180 70% 48%) 0%, hsl(180 60% 42%) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 180, 220, 0.4);
+  }
+
+  .erp-btn-primary:hover::before {
+    opacity: 1;
+  }
+
+  .erp-btn-secondary {
+    background: linear-gradient(135deg, hsl(220 18% 18%) 0%, hsl(220 18% 15%) 100%);
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .erp-btn-secondary:hover {
+    background: linear-gradient(135deg, hsl(220 18% 22%) 0%, hsl(220 18% 18%) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(180, 100, 255, 0.2);
+  }
+
+  .erp-btn-danger {
+    background: linear-gradient(135deg, hsl(0 72% 51%) 0%, hsl(0 65% 45%) 100%);
+    color: hsl(var(--destructive-foreground));
+    box-shadow: 0 4px 12px rgba(255, 85, 85, 0.3);
+  }
+
+  .erp-btn-danger:hover {
+    background: linear-gradient(135deg, hsl(0 75% 55%) 0%, hsl(0 70% 48%) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 85, 85, 0.4);
+  }
+
+  .erp-btn-success {
+    background: linear-gradient(135deg, hsl(142 71% 45%) 0%, hsl(142 65% 40%) 100%);
+    color: hsl(220 20% 8%);
+    box-shadow: 0 4px 12px rgba(100, 200, 100, 0.3);
+  }
+
+  .erp-btn-success:hover {
+    background: linear-gradient(135deg, hsl(142 75% 50%) 0%, hsl(142 70% 42%) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(100, 200, 100, 0.4);
   }
 
   /* Status indicators */
   .status-dot {
-    @apply w-2 h-2 rounded-full;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
   }
 
   .status-dot.success {

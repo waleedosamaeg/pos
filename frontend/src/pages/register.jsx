@@ -126,7 +126,9 @@ const RegisterTabsAnimated = () => {
               name="userType"
               value={formData.userType}
               onChange={handleChange}
+              required
             >
+              <option value="" disabled>{t("register.tabs.mainInfo.fields.selectRole")}</option>
               <option value="admin">{t("register.tabs.mainInfo.fields.role.admin")}</option>
               <option value="seller">{t("register.tabs.mainInfo.fields.role.seller")}</option>
               <option value="manager">{t("register.tabs.mainInfo.fields.role.manager")}</option>

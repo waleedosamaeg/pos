@@ -3,6 +3,7 @@ import { TabProvider } from '@context/TabContext.jsx';
 import AppMenuBar from '@comp/layout/AppMenuBar.jsx';
 import TabBar from '@comp/layout/TabBar.jsx';
 import MainWorkspace from '@comp/layout/MainWorkspace.jsx';
+import Footer from '@comp/layout/Footer.jsx';
 import { useKeyPress } from '@hook/useKeyPress.jsx';
 import { useTabs } from '@context/TabContext.jsx';
 
@@ -50,7 +51,16 @@ function GlobalShortcuts() {
 // App Shell Layout
 function AppShell() {
   return (
-    <div className="h-screen flex flex-col overflow-hidden no-select">
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100vh',
+      width: '100vw',
+      overflow: 'hidden',
+      backgroundColor: 'var(--bg-main)',
+      color: 'var(--color-text)',
+      transition: 'background-color var(--transition-normal), color var(--transition-normal)',
+    }}>
       {/* Global keyboard handler */}
       <GlobalShortcuts />
       
@@ -62,6 +72,9 @@ function AppShell() {
       
       {/* Main Workspace */}
       <MainWorkspace />
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

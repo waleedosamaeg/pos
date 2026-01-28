@@ -1,5 +1,7 @@
 import React from 'react';
 import { useTabs } from '@context/TabContext.jsx';
+import { useUiContext } from '@context/uiContext.jsx';
+import { useTranslation } from 'react-i18next';
 import { 
   X, 
   FileText, 
@@ -11,14 +13,12 @@ import {
   Info, 
   Keyboard, 
   Layout,
-  Plus,
-  ChevronLeft,
-  ChevronRight
+  Plus
 } from 'lucide-react';
 
 /**
  * Modern Tab Bar Component
- * Chrome-style tabs with smooth animations
+ * Professional ERP-style tabs with theme switching
  */
 
 // Icon mapping for different tab types
@@ -52,131 +52,265 @@ const tabIcons = {
   Returns: FileText
 };
 
+// Tab type to translation key mapping
+const tabTranslationKeys = {
+  SalesScreen: 'menuItems.newInvoice',
+  SalesHistory: 'menuItems.salesHistory',
+  Customers: 'menuItems.customers',
+  CustomerForm: 'menuItems.newCustomer',
+  CustomerGroups: 'menuItems.customerGroups',
+  Products: 'menuItems.products',
+  ProductForm: 'menuItems.newProduct',
+  StockSearch: 'menuItems.stockSearch',
+  Categories: 'menuItems.categories',
+  Suppliers: 'menuItems.suppliers',
+  PurchaseOrders: 'menuItems.purchaseOrders',
+  LowStock: 'menuItems.lowStockAlert',
+  SalesReport: 'menuItems.salesReports',
+  DailySummary: 'menuItems.dailySales',
+  WeeklySummary: 'menuItems.weeklySales',
+  MonthlySummary: 'menuItems.monthlySales',
+  SalesByProduct: 'menuItems.salesByProduct',
+  SalesByCustomer: 'menuItems.salesByCustomer',
+  InventoryReport: 'menuItems.inventoryReport',
+  FinancialReport: 'menuItems.financialReport',
+  CustomReport: 'menuItems.customReport',
+  Dashboard: 'menuItems.dashboard',
+  Settings: 'menuItems.preferences',
+  Shortcuts: 'menuItems.keyboardShortcuts',
+  About: 'menuItems.aboutApp',
+  Payments: 'menuItems.payments',
+  Returns: 'menuItems.returns'
+};
+
 function TabBar() {
   const { tabs, activeTabId, switchTab, closeTab, openTab } = useTabs();
+  const { dispatch: uiDispatch } = useUiContext();
+  const { t, i18n } = useTranslation();
 
-  // Handle tab close with stop propagation
+  // Function to get translated tab title
+  const getTabTitle = (tab) => {
+    const translationKey = tabTranslationKeys[tab.type];
+    if (translationKey) {
+      return t(translationKey);
+    }
+    return tab.title;
+  };
+
+  // Handle tab close with confirmation
   const handleClose = (e, tabId) => {
     e.stopPropagation();
-    closeTab(tabId);
+    const tab = tabs.find(t => t.id === tabId);
+    
+    uiDispatch({
+      type: 'confirm',
+      payload: {
+        title: t('confirm.closeTab.title'),
+        message: `${t('confirm.closeTab.message')} "${tab?.title}"?`,
+        onConfirm: () => {
+          closeTab(tabId);
+        }
+      }
+    });
   };
 
   // Handle new tab
   const handleNewTab = () => {
-    openTab('SalesScreen', 'Sales Invoice');
+    openTab('SalesScreen', t('menuItems.newInvoice'));
   };
 
   return (
     <div 
-      className="h-10 flex items-stretch select-none border-b"
       style={{
-        background: 'hsl(var(--tab-bar))',
-        borderColor: 'hsl(var(--border))'
+        display: 'flex',
+        overflow : "auto",
+        alignItems: 'stretch',
+        height: '44px',
+        userSelect: 'none',
+        backgroundColor: 'var(--tab-bg)',
+        borderBottom: '1px solid var(--tab-border)',
+        gap: '4px',
+        padding: '4px 8px',
+        transition: 'background-color var(--transition-normal), border-color var(--transition-normal)',
       }}
     >
       {/* Tab scroll area */}
-      <div className="flex-1 flex items-stretch overflow-x-auto scrollbar-hide">
+      <div 
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'stretch',
+          overflowX: 'auto',
+          gap: '6px',
+        }}
+      >
         {tabs.length === 0 ? (
           <div 
-            className="flex items-center px-4 text-xs italic"
-            style={{ color: 'hsl(var(--muted-foreground))' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              paddingLeft: '16px',
+              fontSize: '12px',
+              fontStyle: 'italic',
+              color: 'var(--color-muted)',
+            }}
           >
-            No open documents — Press F9 or click + to create a new invoice
+            {t('tabBar.noDocuments')}
           </div>
         ) : (
-          <div className="flex items-stretch">
-            {tabs.map((tab, index) => {
-              const IconComponent = tabIcons[tab.type] || FileText;
-              const isActive = tab.id === activeTabId;
+          tabs.map((tab) => {
+            const IconComponent = tabIcons[tab.type] || FileText;
+            const isActive = tab.id === activeTabId;
+            const displayTitle = getTabTitle(tab);
 
-              return (
-                <div
-                  key={tab.id}
-                  className={`group relative flex items-center gap-2 px-3 min-w-[120px] max-w-[200px] cursor-pointer transition-all duration-150 border-r`}
-                  style={{
-                    background: isActive 
-                      ? 'hsl(var(--tab-active))' 
-                      : 'transparent',
-                    borderColor: 'hsl(var(--border) / 0.5)',
-                    borderBottom: isActive 
-                      ? '2px solid hsl(var(--primary))' 
-                      : '2px solid transparent'
+            return (
+              <div
+                key={tab.id}
+                onClick={() => switchTab(tab.id)}
+                title={displayTitle}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 12px',
+                  minWidth: '120px',
+                  maxWidth: '220px',
+                  backgroundColor: isActive ? 'var(--tab-active)' : 'transparent',
+                  color: isActive ? 'var(--tab-text-active)' : 'var(--tab-text)',
+                  border: `1px solid ${isActive ? 'var(--color-primary)' : 'var(--tab-border)'}`,
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  transition: 'all var(--transition-fast)',
+                  position: 'relative',
+                  group: 'relative',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = 'rgba(250, 204, 21, 0.05)';
+                    e.currentTarget.style.borderColor = 'rgba(250, 204, 21, 0.3)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.borderColor = 'var(--tab-border)';
+                  }
+                }}
+              >
+                {/* Tab icon */}
+                <IconComponent 
+                  size={16} 
+                  style={{ 
+                    flexShrink: 0,
+                    color: isActive ? 'var(--color-primary)' : 'var(--color-muted-light)',
+                    transition: 'color var(--transition-fast)',
                   }}
-                  onClick={() => switchTab(tab.id)}
-                  title={tab.title}
+                />
+                
+                {/* Tab title */}
+                <span 
+                  style={{
+                    flex: 1,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontSize: '12px',
+                    fontWeight: isActive ? '600' : '500',
+                    color: isActive ? 'var(--tab-text-active)' : 'var(--tab-text)',
+                    transition: 'color var(--transition-fast)',
+                  }}
                 >
-                  {/* Tab icon */}
-                  <IconComponent 
-                    size={14} 
-                    className="flex-shrink-0 transition-colors"
-                    style={{ 
-                      color: isActive 
-                        ? 'hsl(var(--primary))' 
-                        : 'hsl(var(--muted-foreground))' 
-                    }}
-                  />
-                  
-                  {/* Tab title */}
-                  <span 
-                    className="flex-1 truncate text-xs font-medium transition-colors"
-                    style={{ 
-                      color: isActive 
-                        ? 'hsl(var(--foreground))' 
-                        : 'hsl(var(--muted-foreground))' 
-                    }}
-                  >
-                    {tab.title}
-                  </span>
+                  {displayTitle}
+                </span>
 
-                  {/* Close button */}
-                  <button
-                    className="flex-shrink-0 p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-destructive/20 transition-all"
-                    onClick={(e) => handleClose(e, tab.id)}
-                    title="Close tab (Ctrl+W)"
-                    style={{ color: 'hsl(var(--muted-foreground))' }}
-                  >
-                    <X size={12} />
-                  </button>
-
-                  {/* Active tab indicator glow */}
-                  {isActive && (
-                    <div 
-                      className="absolute inset-x-0 bottom-0 h-0.5"
-                      style={{ 
-                        background: 'linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)',
-                        opacity: 0.5
-                      }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                {/* Close button */}
+                <button
+                  onClick={(e) => handleClose(e, tab.id)}
+                  title={t('tabBar.closeTab')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    padding: '4px',
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--color-muted)',
+                    cursor: 'pointer',
+                    borderRadius: '4px',
+                    transition: 'all var(--transition-fast)',
+                    opacity: isActive ? 1 : 0,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                    e.currentTarget.style.color = '#ef4444';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = 'var(--color-muted)';
+                  }}
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            );
+          })
         )}
       </div>
 
+      {/* Divider */}
+      {tabs.length > 0 && (
+        <div 
+          style={{
+            width: '1px',
+            backgroundColor: 'var(--tab-border)',
+            margin: '4px 0',
+          }}
+        />
+      )}
+
       {/* New tab button */}
-      <div className="flex items-center px-2 border-l" style={{ borderColor: 'hsl(var(--border) / 0.5)' }}>
-        <button
-          onClick={handleNewTab}
-          className="p-1.5 rounded transition-colors hover:bg-accent"
-          title="New Invoice (F9)"
-          style={{ color: 'hsl(var(--muted-foreground))' }}
-        >
-          <Plus size={16} />
-        </button>
-      </div>
+      <button
+        onClick={handleNewTab}
+        title={t('tabBar.newInvoice')}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '8px 10px',
+          backgroundColor: 'transparent',
+          border: 'none',
+          color: 'var(--color-muted)',
+          cursor: 'pointer',
+          borderRadius: '6px',
+          transition: 'all var(--transition-fast)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = 'var(--bg-input)';
+          e.currentTarget.style.color = 'var(--color-primary)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'transparent';
+          e.currentTarget.style.color = 'var(--color-muted)';
+        }}
+      >
+        <Plus size={16} />
+      </button>
 
       {/* Tab count indicator */}
       {tabs.length > 0 && (
         <div 
-          className="flex items-center px-3 text-[10px] font-mono border-l"
-          style={{ 
-            color: 'hsl(var(--muted-foreground))',
-            borderColor: 'hsl(var(--border) / 0.5)'
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            paddingRight: '8px',
+            fontSize: '10px',
+            fontFamily: 'monospace',
+            color: 'var(--color-muted)',
+            whiteSpace: 'nowrap',
           }}
         >
-          {tabs.length} tab{tabs.length !== 1 ? 's' : ''}
+          {tabs.length}
         </div>
       )}
     </div>

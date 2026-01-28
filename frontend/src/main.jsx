@@ -11,7 +11,7 @@ import { BrowserRouter } from 'react-router-dom'
 createRoot(document.getElementById('root')).render(
   
   <BrowserRouter>
-            <LanguageSwitcher/>
+            {/* <LanguageSwitcher/> */}
             <App />
   </BrowserRouter>
 

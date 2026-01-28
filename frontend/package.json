@@ -13,6 +13,7 @@
     "@heroui/alert": "^2.2.29",
     "@heroui/system": "^2.4.25",
     "@heroui/theme": "^2.4.25",
+    "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/vite": "^4.1.18",
     "axios": "^1.13.2",
     "dotenv": "^17.2.3",

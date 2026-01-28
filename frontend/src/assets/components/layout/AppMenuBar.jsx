@@ -1,5 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTabs } from '@context/TabContext.jsx';
+import { useUiContext } from '@context/uiContext.jsx';
+import { useUserContext } from '@context/userContext.jsx';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { CompactLanguageSwitcher } from '@comp/languageSwitcher.jsx';
 import { 
   FileText, 
   Edit3, 
@@ -36,7 +41,10 @@ import {
   MessageCircle,
   Receipt,
   CreditCard,
-  ChevronRight
+  ChevronRight,
+  User,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 /**
@@ -157,26 +165,88 @@ const menuStructure = [
 ];
 
 // Submenu component for nested menus
-function SubMenu({ items, onItemClick, parentRef }) {
+function SubMenu({ items, onItemClick, parentRef, isRTL = false }) {
   const [hoveredItem, setHoveredItem] = useState(null);
   const submenuRef = useRef(null);
+  const [submenuStyle, setSubmenuStyle] = useState({
+    position: 'absolute',
+    top: 0,
+    left: '100%',
+    marginLeft: '2px',
+    minWidth: '200px',
+    paddingTop: '6px',
+    paddingBottom: '6px',
+    borderRadius: '4px',
+    boxShadow: '0 10px 38px rgba(0, 0, 0, 0.5)',
+    zIndex: 101,
+    backgroundColor: 'var(--bg-tertiary)',
+    border: '1px solid var(--color-border-muted)',
+    transition: 'background-color var(--transition-normal), border-color var(--transition-normal)',
+  });
+
+  useEffect(() => {
+    if (submenuRef.current) {
+      const submenuRect = submenuRef.current.getBoundingClientRect();
+      const parentRect = submenuRef.current.parentElement?.getBoundingClientRect();
+      
+      const newStyle = {
+        position: 'absolute',
+        top: 0,
+        minWidth: '200px',
+        paddingTop: '6px',
+        paddingBottom: '6px',
+        borderRadius: '4px',
+        boxShadow: '0 10px 38px rgba(0, 0, 0, 0.5)',
+        zIndex: 101,
+        backgroundColor: 'var(--bg-tertiary)',
+        border: '1px solid var(--color-border-muted)',
+        transition: 'background-color var(--transition-normal), border-color var(--transition-normal)',
+      };
+
+      if (isRTL) {
+        // In RTL, try to position on the left (right: 100%)
+        // If it goes off-screen (left edge < 0), position on the right (left: 100%)
+        const wouldFitOnLeft = parentRect && (parentRect.left - 200) > 0;
+        
+        if (wouldFitOnLeft) {
+          newStyle.right = '100%';
+          newStyle.marginRight = '2px';
+        } else {
+          newStyle.left = '100%';
+          newStyle.marginLeft = '2px';
+        }
+      } else {
+        // In LTR, try to position on the right (left: 100%)
+        // If it goes off-screen (right edge > window width), position on the left (right: 100%)
+        const wouldFitOnRight = parentRect && (parentRect.right + 200) < window.innerWidth;
+        
+        if (wouldFitOnRight) {
+          newStyle.left = '100%';
+          newStyle.marginLeft = '2px';
+        } else {
+          newStyle.right = '100%';
+          newStyle.marginRight = '2px';
+        }
+      }
+
+      setSubmenuStyle(newStyle);
+    }
+  }, [isRTL]);
 
   return (
     <div 
       ref={submenuRef}
-      className="absolute left-full top-0 ml-0.5 min-w-52 py-1 rounded-md shadow-2xl z-[100] border"
-      style={{
-        background: 'hsl(var(--popover))',
-        borderColor: 'hsl(var(--border))'
-      }}
+      style={submenuStyle}
     >
       {items.map((item, index) => {
         if (item.type === 'separator') {
           return (
             <div 
               key={index} 
-              className="my-1 mx-2 border-t"
-              style={{ borderColor: 'hsl(var(--border))' }}
+              style={{
+                margin: '4px 0',
+                borderTop: '1px solid rgba(71, 85, 105, 0.2)',
+              }}
             />
           );
         }
@@ -186,17 +256,25 @@ function SubMenu({ items, onItemClick, parentRef }) {
         return (
           <div
             key={index}
-            className="relative"
+            style={{ position: 'relative' }}
             onMouseEnter={() => setHoveredItem(index)}
             onMouseLeave={() => setHoveredItem(null)}
           >
             <div
-              className={`flex items-center justify-between px-3 py-2 mx-1 rounded-sm cursor-pointer transition-colors text-xs ${
-                !item.action && !hasSubmenu ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
               style={{
-                color: 'hsl(var(--popover-foreground))',
-                background: hoveredItem === index ? 'hsl(var(--accent))' : 'transparent'
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingLeft: '12px',
+                paddingRight: '12px',
+                paddingTop: '8px',
+                paddingBottom: '8px',
+                fontSize: '13px',
+                backgroundColor: hoveredItem === index ? 'rgba(250, 204, 21, 0.1)' : 'transparent',
+                color: 'var(--color-text-secondary)',
+                cursor: !item.action && !hasSubmenu ? 'not-allowed' : 'pointer',
+                opacity: !item.action && !hasSubmenu ? 0.5 : 1,
+                transition: 'background-color var(--transition-fast)',
               }}
               onClick={() => {
                 if (item.action || hasSubmenu) {
@@ -204,20 +282,20 @@ function SubMenu({ items, onItemClick, parentRef }) {
                 }
               }}
             >
-              <span className="flex items-center gap-2">
-                {item.icon && <item.icon size={14} className="opacity-70" />}
-                <span>{item.label}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {item.icon && <item.icon size={14} style={{ opacity: 0.7 }} />}
+                <span style={{ fontWeight: 500 }}>{item.label}</span>
               </span>
-              <div className="flex items-center gap-2">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '12px' }}>
                 {item.shortcut && (
-                  <span className="text-[10px] opacity-50 font-mono">{item.shortcut}</span>
+                  <span style={{ fontSize: '11px', opacity: 0.5, fontFamily: 'monospace' }}>{item.shortcut}</span>
                 )}
-                {hasSubmenu && <ChevronRight size={12} className="opacity-50" />}
+                {hasSubmenu && <ChevronRight size={12} style={{ opacity: 0.5 }} />}
               </div>
             </div>
 
             {hasSubmenu && hoveredItem === index && (
-              <SubMenu items={item.submenu} onItemClick={onItemClick} />
+              <SubMenu items={item.submenu} onItemClick={onItemClick} isRTL={isRTL} />
             )}
           </div>
         );
@@ -227,26 +305,74 @@ function SubMenu({ items, onItemClick, parentRef }) {
 }
 
 // Main dropdown menu component
-function DropdownMenu({ items, onItemClick, onClose }) {
+function DropdownMenu({ items, onItemClick, onClose, isRTL = false }) {
   const [hoveredItem, setHoveredItem] = useState(null);
   const menuRef = useRef(null);
+  const [menuStyle, setMenuStyle] = useState({
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    marginTop: '4px',
+    minWidth: '200px',
+    paddingTop: '6px',
+    paddingBottom: '6px',
+    borderRadius: '4px',
+    boxShadow: '0 10px 38px rgba(0, 0, 0, 0.5)',
+    zIndex: 100,
+    backgroundColor: 'var(--bg-tertiary)',
+    border: '1px solid var(--color-border-muted)',
+    transition: 'background-color var(--transition-normal), border-color var(--transition-normal)',
+  });
+
+  useEffect(() => {
+    if (menuRef.current) {
+      const menuElement = menuRef.current;
+      const parentElement = menuElement.parentElement;
+      const parentRect = parentElement?.getBoundingClientRect();
+      
+      const newStyle = {
+        position: 'absolute',
+        top: '100%',
+        marginTop: '4px',
+        minWidth: '200px',
+        paddingTop: '6px',
+        paddingBottom: '6px',
+        borderRadius: '4px',
+        boxShadow: '0 10px 38px rgba(0, 0, 0, 0.5)',
+        zIndex: 100,
+        backgroundColor: 'var(--bg-tertiary)',
+        border: '1px solid var(--color-border-muted)',
+        transition: 'background-color var(--transition-normal), border-color var(--transition-normal)',
+      };
+
+      if (isRTL) {
+        // In Arabic, align menu to the right of parent
+        newStyle.right = 0;
+        newStyle.left = 'auto';
+      } else {
+        // In English, align menu to the left of parent
+        newStyle.left = 0;
+        newStyle.right = 'auto';
+      }
+
+      setMenuStyle(newStyle);
+    }
+  }, [isRTL]);
 
   return (
     <div 
       ref={menuRef}
-      className="absolute left-0 top-full mt-0.5 min-w-52 py-1 rounded-md shadow-2xl z-[100] border"
-      style={{
-        background: 'hsl(var(--popover))',
-        borderColor: 'hsl(var(--border))'
-      }}
+      style={menuStyle}
     >
       {items.map((item, index) => {
         if (item.type === 'separator') {
           return (
             <div 
-              key={index} 
-              className="my-1 mx-2 border-t"
-              style={{ borderColor: 'hsl(var(--border))' }}
+              key={index}
+              style={{
+                margin: '4px 0',
+                borderTop: '1px solid rgba(71, 85, 105, 0.2)',
+              }}
             />
           );
         }
@@ -256,17 +382,25 @@ function DropdownMenu({ items, onItemClick, onClose }) {
         return (
           <div
             key={index}
-            className="relative"
+            style={{ position: 'relative' }}
             onMouseEnter={() => setHoveredItem(index)}
             onMouseLeave={() => setHoveredItem(null)}
           >
             <div
-              className={`flex items-center justify-between px-3 py-2 mx-1 rounded-sm cursor-pointer transition-colors text-xs ${
-                !item.action && !hasSubmenu ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
               style={{
-                color: 'hsl(var(--popover-foreground))',
-                background: hoveredItem === index ? 'hsl(var(--accent))' : 'transparent'
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingLeft: '12px',
+                paddingRight: '12px',
+                paddingTop: '8px',
+                paddingBottom: '8px',
+                fontSize: '13px',
+                backgroundColor: hoveredItem === index ? 'rgba(250, 204, 21, 0.1)' : 'transparent',
+                color: 'var(--color-text-secondary)',
+                cursor: !item.action && !hasSubmenu ? 'not-allowed' : 'pointer',
+                opacity: !item.action && !hasSubmenu ? 0.5 : 1,
+                transition: 'background-color var(--transition-fast)',
               }}
               onClick={() => {
                 if (item.action) {
@@ -274,20 +408,20 @@ function DropdownMenu({ items, onItemClick, onClose }) {
                 }
               }}
             >
-              <span className="flex items-center gap-2">
-                {item.icon && <item.icon size={14} className="opacity-70" />}
-                <span>{item.label}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {item.icon && <item.icon size={14} style={{ opacity: 0.7 }} />}
+                <span style={{ fontWeight: 500 }}>{item.label}</span>
               </span>
-              <div className="flex items-center gap-2">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '12px' }}>
                 {item.shortcut && (
-                  <span className="text-[10px] opacity-50 font-mono">{item.shortcut}</span>
+                  <span style={{ fontSize: '11px', opacity: 0.5, fontFamily: 'monospace' }}>{item.shortcut}</span>
                 )}
-                {hasSubmenu && <ChevronRight size={12} className="opacity-50" />}
+                {hasSubmenu && <ChevronRight size={12} style={{ opacity: 0.5 }} />}
               </div>
             </div>
 
             {hasSubmenu && hoveredItem === index && (
-              <SubMenu items={item.submenu} onItemClick={onItemClick} />
+              <SubMenu items={item.submenu} onItemClick={onItemClick} isRTL={isRTL} />
             )}
           </div>
         );
@@ -298,8 +432,150 @@ function DropdownMenu({ items, onItemClick, onClose }) {
 
 function AppMenuBar() {
   const { openTab } = useTabs();
+  const { state: uiState, dispatch: uiDispatch } = useUiContext();
+  const { state: userState, dispatch: userDispatch } = useUserContext();
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [activeMenu, setActiveMenu] = useState(null);
   const menuBarRef = useRef(null);
+
+  // Translate menu structure
+  const getTranslatedMenuStructure = () => [
+    {
+      label: t('menu.file'),
+      translationKey: 'menu.file',
+      items: [
+        { label: t('menuItems.newInvoice'), action: 'sales', shortcut: 'Ctrl+N', icon: FilePlus },
+        { label: t('menuItems.open'), icon: FileText, action: null, shortcut: 'Ctrl+O' },
+        { type: 'separator' },
+        { label: t('menuItems.save'), icon: Save, action: null, shortcut: 'Ctrl+S' },
+        { label: t('menuItems.saveAs'), icon: FileOutput, action: null },
+        { type: 'separator' },
+        { label: t('menuItems.print'), icon: Printer, action: null, shortcut: 'Ctrl+P' },
+        { type: 'separator' },
+        { label: t('menuItems.exit'), icon: LogOut, action: 'exit' }
+      ]
+    },
+    {
+      label: t('menu.edit'),
+      translationKey: 'menu.edit',
+      items: [
+        { label: t('menuItems.undo'), icon: Undo, action: null, shortcut: 'Ctrl+Z' },
+        { label: t('menuItems.redo'), icon: Redo, action: null, shortcut: 'Ctrl+Y' },
+        { type: 'separator' },
+        { label: t('menuItems.cut'), icon: Scissors, action: null, shortcut: 'Ctrl+X' },
+        { label: t('menuItems.copy'), icon: Copy, action: null, shortcut: 'Ctrl+C' },
+        { label: t('menuItems.paste'), icon: ClipboardPaste, action: null, shortcut: 'Ctrl+V' },
+        { type: 'separator' },
+        { label: t('menuItems.preferences'), icon: Settings, action: 'settings', singleton: true }
+      ]
+    },
+    {
+      label: t('menu.view'),
+      translationKey: 'menu.view',
+      items: [
+        { label: t('menuItems.dashboard'), icon: Layout, action: 'dashboard', singleton: true },
+        { label: t('menuItems.fullScreen'), icon: Maximize, action: null, shortcut: 'F11' },
+        { type: 'separator' },
+        { label: t('menuItems.refresh'), icon: null, action: null, shortcut: 'F5' }
+      ]
+    },
+    {
+      label: t('menu.sales'),
+      translationKey: 'menu.sales',
+      items: [
+        { label: t('menuItems.newInvoice'), icon: FilePlus, action: 'sales', shortcut: 'F9' },
+        { label: t('menuItems.salesHistory'), icon: Receipt, action: 'sales-history', singleton: true },
+        { type: 'separator' },
+        { 
+          label: t('menuItems.customers'),
+          icon: Users, 
+          submenu: [
+            { label: t('menuItems.viewAllCustomers'), icon: Users, action: 'customers', singleton: true },
+            { label: t('menuItems.newCustomer'), icon: UserPlus, action: 'new-customer' },
+            { type: 'separator' },
+            { label: t('menuItems.customerGroups'), icon: Building, action: 'customer-groups', singleton: true }
+          ]
+        },
+        { type: 'separator' },
+        { label: t('menuItems.payments'), icon: CreditCard, action: 'payments', singleton: true },
+        { label: t('menuItems.returns'), icon: Undo, action: 'returns', singleton: true }
+      ]
+    },
+    {
+      label: t('menu.inventory'),
+      translationKey: 'menu.inventory',
+      items: [
+        { 
+          label: t('menuItems.products'),
+          icon: Package,
+          submenu: [
+            { label: t('menuItems.viewAllProducts'), icon: Package, action: 'products', singleton: true },
+            { label: t('menuItems.newProduct'), icon: PackagePlus, action: 'new-product' },
+            { label: t('menuItems.stockSearch'), icon: PackageSearch, action: 'stock-search', singleton: true },
+            { type: 'separator' },
+            { label: t('menuItems.categories'), icon: Package, action: 'categories', singleton: true }
+          ]
+        },
+        { type: 'separator' },
+        { label: t('menuItems.suppliers'), icon: Truck, action: 'suppliers', singleton: true },
+        { label: t('menuItems.purchaseOrders'), icon: FileText, action: 'purchase-orders', singleton: true },
+        { type: 'separator' },
+        { label: t('menuItems.lowStockAlert'), icon: AlertTriangle, action: 'low-stock', singleton: true }
+      ]
+    },
+    {
+      label: t('menu.reports'),
+      translationKey: 'menu.reports',
+      items: [
+        { 
+          label: t('menuItems.salesReports'),
+          icon: TrendingUp,
+          submenu: [
+            { label: t('menuItems.dailySales'), icon: Calendar, action: 'report-daily', singleton: true },
+            { label: t('menuItems.weeklySales'), icon: TrendingUp, action: 'report-weekly', singleton: true },
+            { label: t('menuItems.monthlySales'), icon: TrendingUp, action: 'report-monthly', singleton: true },
+            { type: 'separator' },
+            { label: t('menuItems.salesByProduct'), icon: Package, action: 'report-sales-product', singleton: true },
+            { label: t('menuItems.salesByCustomer'), icon: Users, action: 'report-sales-customer', singleton: true }
+          ]
+        },
+        { label: t('menuItems.inventoryReport'), icon: Package, action: 'report-inventory', singleton: true },
+        { label: t('menuItems.financialReport'), icon: DollarSign, action: 'report-financial', singleton: true },
+        { type: 'separator' },
+        { label: t('menuItems.customReport'), icon: BarChart3, action: 'report-custom' }
+      ]
+    },
+    {
+      label: t('menu.help'),
+      translationKey: 'menu.help',
+      items: [
+        { label: t('menuItems.documentation'), icon: BookOpen, action: null },
+        { label: t('menuItems.keyboardShortcuts'), icon: null, action: 'shortcuts', singleton: true, shortcut: 'Ctrl+/' },
+        { type: 'separator' },
+        { label: t('menuItems.aboutApp'), icon: Info, action: 'about' }
+      ]
+    }
+  ];
+
+  // Logout handler
+  const handleLogout = () => {
+    uiDispatch({
+      type: 'confirm',
+      payload: {
+        title: t('confirm.logout.title'),
+        message: t('confirm.logout.message'),
+        onConfirm: () => {
+          // Clear localStorage
+          localStorage.clear();
+          // Clear user context
+          userDispatch({ type: 'user.logout' });
+          // Redirect to login
+          navigate('/login');
+        }
+      }
+    });
+  };
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -312,9 +588,30 @@ function AppMenuBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Check if RTL
+  const isRTL = uiState.lang === 'ar';
+
+  // Get user info
+  console.log(userState)
+  const userName = userState?.user?.profile?.nickname || 'Guest';
+  let userRole = userState?.user?.profile?.role || 'User';
+  if (userRole === 3 ) {
+    userRole = "Administrator"
+  }else if (userRole === 2 ) {  
+    userRole = "Manager"
+  }else {
+    userRole = "Staff"
+  }
+
   // Handle menu item click
   const handleItemClick = (item) => {
     if (!item.action) {
+      return;
+    }
+
+    // Handle logout action
+    if (item.action === 'exit') {
+      handleLogout();
       return;
     }
 
@@ -369,78 +666,190 @@ function AppMenuBar() {
     }
   };
 
+  // Toggle theme
+  const toggleTheme = () => {
+    const newTheme = uiState.theme === 'dark' ? 'light' : 'dark';
+    uiDispatch({ type: 'set-theme', payload: newTheme });
+  };
+
   return (
     <div 
       ref={menuBarRef}
-      className="h-8 flex items-center px-1 gap-0.5 select-none border-b"
       style={{
-        background: 'hsl(var(--menu-bar))',
-        borderColor: 'hsl(var(--border))'
+        height: '36px',
+        display: 'flex',
+        alignItems: 'center',
+        paddingLeft: '0',
+        paddingRight: '12px',
+        gap: '0',
+        userSelect: 'none',
+        backgroundColor: 'var(--bg-secondary)',
+        borderBottom: '1px solid var(--color-border-muted)',
+        transition: 'background-color var(--transition-normal), border-color var(--transition-normal)',
       }}
     >
-      {/* Application logo/icon */}
-      <div className="flex items-center px-2 mr-1">
+      {/* Application logo */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        height: '100%',
+        paddingLeft: '8px',
+        paddingRight: '16px',
+        borderRight: '1px solid var(--color-border-muted)',
+      }}>
         <div 
-          className="w-5 h-5 rounded flex items-center justify-center"
-          style={{ background: 'hsl(var(--primary))' }}
+          style={{
+            width: '24px',
+            height: '24px',
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'var(--color-primary)',
+            fontSize: '10px',
+            fontWeight: 'bold',
+            color: '#1e293b',
+            letterSpacing: '0.5px',
+          }}
         >
-          <span 
-            className="text-[9px] font-bold"
-            style={{ color: 'hsl(var(--primary-foreground))' }}
-          >
-            ERP
-          </span>
+          Ω
         </div>
       </div>
 
       {/* Menu items */}
-      {menuStructure.map((menu) => (
-        <div key={menu.label} className="relative">
-          <div
-            className={`px-3 py-1 text-xs font-medium cursor-pointer rounded transition-colors`}
-            style={{
-              color: activeMenu === menu.label ? 'hsl(var(--foreground))' : 'hsl(var(--menu-bar-foreground))',
-              background: activeMenu === menu.label ? 'hsl(var(--menu-hover))' : 'transparent'
-            }}
-            onClick={() => handleMenuClick(menu.label)}
-            onMouseEnter={() => handleMenuHover(menu.label)}
-          >
-            {menu.label}
+      <div style={{ display: 'flex', alignItems: 'center', height: '100%', flex: 1 }}>
+        {getTranslatedMenuStructure().map((menu) => (
+          <div key={menu.translationKey} style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center' }}>
+            <div
+              style={{
+                height: '100%',
+                paddingLeft: '12px',
+                paddingRight: '12px',
+                fontSize: '12px',
+                fontWeight: '400',
+                cursor: 'pointer',
+                color: activeMenu === menu.label ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                backgroundColor: activeMenu === menu.label 
+                  ? 'rgba(250, 204, 21, 0.08)'
+                  : 'transparent',
+                borderBottom: activeMenu === menu.label
+                  ? '2px solid var(--color-primary)'
+                  : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                transition: 'all var(--transition-fast)',
+              }}
+              onClick={() => handleMenuClick(menu.label)}
+              onMouseEnter={() => handleMenuHover(menu.label)}
+            >
+              {menu.label}
+            </div>
+
+            {/* Dropdown */}
+            {activeMenu === menu.label && (
+              <DropdownMenu 
+                items={menu.items} 
+                onItemClick={handleItemClick}
+                onClose={() => setActiveMenu(null)}
+                isRTL={isRTL}
+              />
+            )}
           </div>
+        ))}
+      </div>
 
-          {/* Dropdown */}
-          {activeMenu === menu.label && (
-            <DropdownMenu 
-              items={menu.items} 
-              onItemClick={handleItemClick}
-              onClose={() => setActiveMenu(null)}
-            />
-          )}
+      {/* Right side - system info and language switcher */}
+      <div style={{
+        marginLeft: 'auto',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0',
+        height: '100%',
+      }}>
+        {/* Language Switcher */}
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center',
+          height: '100%',
+          paddingLeft: '12px',
+          paddingRight: '12px',
+          borderLeft: '1px solid var(--color-border-muted)',
+        }}>
+          <CompactLanguageSwitcher />
         </div>
-      ))}
 
-      {/* Right side - system info */}
-      <div className="ml-auto flex items-center gap-4 px-3">
-        <span 
-          className="text-[10px]"
-          style={{ color: 'hsl(var(--muted-foreground))' }}
-        >
-          {new Date().toLocaleDateString('en-US', { 
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric',
-            year: 'numeric'
-          })}
-        </span>
-        <span 
-          className="text-[10px] px-1.5 py-0.5 rounded"
-          style={{ 
-            color: 'hsl(var(--muted-foreground))',
-            background: 'hsl(var(--muted))'
+        {/* Separator */}
+        <div style={{
+          width: '1px',
+          height: '20px',
+          backgroundColor: 'var(--color-border-muted)',
+        }} />
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          title={`Switch to ${uiState.theme === 'dark' ? 'light' : 'dark'} mode`}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '6px 8px',
+            backgroundColor: 'transparent',
+            border: 'none',
+            color: 'var(--color-muted)',
+            cursor: 'pointer',
+            borderRadius: '4px',
+            transition: 'all var(--transition-fast)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--bg-input)';
+            e.currentTarget.style.color = 'var(--color-primary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = 'var(--color-muted)';
           }}
         >
-          v1.0.0
-        </span>
+          {uiState.theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+        </button>
+
+        {/* Separator */}
+        <div style={{
+          width: '1px',
+          height: '20px',
+          backgroundColor: 'var(--color-border-muted)',
+        }} />
+
+        {/* Current User Info */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          paddingLeft: '8px',
+          paddingRight: '12px',
+        }}>
+          <User size={14} style={{ color: 'var(--color-primary)' }} />
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            fontSize: '11px',
+          }}>
+            <span style={{ 
+              color: 'var(--color-text)', 
+              fontWeight: '600',
+              lineHeight: '1.2'
+            }}>
+              {userName}
+            </span>
+            <span style={{ 
+              color: 'var(--color-muted)',
+              fontSize: '10px',
+              lineHeight: '1.2'
+            }}>
+              {userRole}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import fetchToken from "../utils/fetchToken.js"
 const Router = express.Router()
 
 Router.post("/auth/verify" , (req , res , next)=>{
-
     const data = fetchToken(req)
     if (!data.state) { 
         return res.status(401).json(data)

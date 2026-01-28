@@ -6,7 +6,9 @@ class Batch {
 
     }
     async add({product_id , unit_id , expiry_date = null, cost_price , selling_price , stock = 0   , created_by = null , no_profit = false}) { 
-        const connection = await db_handler.getConnection()
+        const connection = await db_handler.getConnection();
+        // start database transaction
+        await connection.beginTransaction();
 
         try { 
 
@@ -30,14 +32,7 @@ class Batch {
                 }
                  
                
-                // create if shorcut exists
-                // const trimmedShortcut = shortcut ? shortcut.trim() : null
-
-                // if (trimmedShortcut) { 
-                //     const exists = await new Shortcut().exists(trimmedShortcut)
-                //     if (!exists.state)  return exists
-                // }
-
+          
 
                 // compare cost_price with selling price 
                 if (selling_price < cost_price ) { 
@@ -48,8 +43,6 @@ class Batch {
                 }
                
 
-                // start database transaction
-                await connection.beginTransaction()
                 const [rows] = await connection.execute( `INSERT INTO product_batches (product_id , unit_id , expiry_date , cost_price , selling_price , stock  , created_by) values ( ? , ? , ? , ? ,  ? , ? , ?)`, [product_id,unit_id , expiry_date ? expiry_date : '2100-01-01' , cost_price , selling_price , stock  , created_by])
                 if (rows && rows.affectedRows > 0 ) { 
                     await connection.commit();   

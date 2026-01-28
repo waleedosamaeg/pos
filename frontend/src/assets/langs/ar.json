@@ -1,56 +1,166 @@
 {
     "loader" : {
         "text" : "جاري التحميل"
-    },"handler" : {
-            "error" : {
-                "unexpected"  : {
-                    "title" : "خطأ غير متوقع" , 
-                    "text" : "حدث خطأ غير متوقع  برجاء المحاولة مجددا او ابلاغ المسؤل"
-                },
-                "title" : "عملية خاطئة"
-            },"success"  : {
-                "title" : "عملية ناجحه"
-            }
-    }
-    ,"login": {
+    },
+    "handler" : {
+        "error" : {
+            "unexpected"  : {
+                "title" : "خطأ غير متوقع", 
+                "text" : "حدث خطأ غير متوقع  برجاء المحاولة مجددا او ابلاغ المسؤل"
+            },
+            "title" : "عملية خاطئة"
+        },
+        "success"  : {
+            "title" : "عملية ناجحه"
+        }
+    },
+    "login": {
         "title": "تسجيل الدخول",
         "username": "اسم المستخدم",
         "password": "كلمة المرور",
         "submit": "تسجيل",
         "loading" : "جاري تسجيل الدخول ..."
-    }
-    ,"register" : {
-        "title" : "إنشــاء حســاب جديد" , 
+    },
+    "register" : {
+        "title" : "إنشــاء حســاب جديد", 
         "tabs" : {
             "mainInfo" : {
                 "title" : "المعــلومات الشخصية",
                 "fields" : {
-                    "username" : "اسـم المستخدم" ,
-                    "password" : "كلمة المرور" , 
-                    "confirmPassword" : "تأكيد كلمة المرور" , 
-                    "phone" : "رقم الهـاتف", 
+                    "username" : "اسـم المستخدم",
+                    "password" : "كلمة المرور", 
+                    "confirmPassword" : "تأكيد كلمة المرور", 
+                    "phone" : "رقم الهـاتف",
+                    "selectRole" : "اختر دورك",
                     "role" : {
                         "manager" : "مدير",
-                        "admin" : "صاحب المؤسسه" , 
+                        "admin" : "صاحب المؤسسه", 
                         "seller" : "بائع"
                     }
                 }
             },
             "permessions"  : {
                 "title" : "الصـلاحيات",
-                  "categories" : {
-                    "general" : "عــامة" , 
-                    "manager" : "مشرفين" , 
+                "categories" : {
+                    "general" : "عــامة", 
+                    "manager" : "مشرفين", 
                     "admin" : "مدير"
-                }
-                ,"permessions" : {
+                },
+                "permessions" : {
                     "sell" : "فاتورة بيع",
-                    "addUser" : "اضافة مستخدم" , 
+                    "addUser" : "اضافة مستخدم", 
                     "sellReports" : "تقارير مبيعات"
                 }
             }
+        },
+        "submit" : "إنشــاء"
+    },
+    "confirm" : {
+        "logout" : {
+            "title" : "تسجيل الخروج",
+            "message" : "هل أنت متأكد من رغبتك في تسجيل الخروج؟"
+        },
+        "closeTab" : {
+            "title" : "إغلاق التبويب",
+            "message" : "هل أنت متأكد من رغبتك في إغلاق هذا التبويب؟"
         }
-        ,"submit" : "إنشــاء"
-        
+    },
+    "buttons" : {
+        "confirm" : "تأكيد",
+        "cancel" : "إلغاء",
+        "ok" : "حسناً",
+        "logout" : "تسجيل الخروج",
+        "yes" : "نعم",
+        "no" : "لا"
+    },
+    "menu" : {
+        "file" : "ملف",
+        "edit" : "تعديل",
+        "view" : "عرض",
+        "sales" : "المبيعات",
+        "customers" : "العملاء",
+        "inventory" : "المخزون",
+        "reports" : "التقارير",
+        "settings" : "الإعدادات",
+        "help" : "مساعدة"
+    },
+    "menuItems" : {
+        "newInvoice" : "فاتورة جديدة",
+        "salesHistory" : "سجل المبيعات",
+        "customers" : "العملاء",
+        "newCustomer" : "عميل جديد",
+        "products" : "المنتجات",
+        "newProduct" : "منتج جديد",
+        "stockSearch" : "بحث المخزون",
+        "dashboard" : "لوحة التحكم",
+        "preferences" : "التفضيلات",
+        "exit" : "خروج",
+        "logout" : "تسجيل الخروج",
+        "about" : "حول",
+        "help" : "مساعدة",
+        "open" : "فتح...",
+        "save" : "حفظ",
+        "saveAs" : "حفظ باسم...",
+        "print" : "طباعة",
+        "undo" : "تراجع",
+        "redo" : "إعادة",
+        "cut" : "قص",
+        "copy" : "نسخ",
+        "paste" : "لصق",
+        "fullScreen" : "ملء الشاشة",
+        "refresh" : "تحديث",
+        "viewAllCustomers" : "عرض جميع العملاء",
+        "customerGroups" : "مجموعات العملاء",
+        "payments" : "الدفعات",
+        "returns" : "المرتجعات",
+        "viewAllProducts" : "عرض جميع المنتجات",
+        "categories" : "الفئات",
+        "suppliers" : "الموردون",
+        "purchaseOrders" : "طلبات الشراء",
+        "lowStockAlert" : "تنبيه المخزون المنخفض",
+        "salesReports" : "تقارير المبيعات",
+        "dailySales" : "المبيعات اليومية",
+        "weeklySales" : "المبيعات الأسبوعية",
+        "monthlySales" : "المبيعات الشهرية",
+        "salesByProduct" : "المبيعات حسب المنتج",
+        "salesByCustomer" : "المبيعات حسب العميل",
+        "inventoryReport" : "تقرير المخزون",
+        "financialReport" : "التقرير المالي",
+        "customReport" : "تقرير مخصص",
+        "documentation" : "التوثيق",
+        "keyboardShortcuts" : "اختصارات لوحة المفاتيح",
+        "aboutApp" : "حول OMEGA POS"
+    },
+    "footer" : {
+        "online" : "متصل",
+        "items" : "عناصر",
+        "sales" : "مبيعات",
+        "alerts" : "تنبيهات",
+        "logout" : "تسجيل الخروج"
+    },
+    "tabBar" : {
+        "noDocuments" : "لا توجد مستندات مفتوحة — اضغط F9 أو انقر + لإنشاء فاتورة جديدة",
+        "newInvoice" : "فاتورة جديدة (F9)",
+        "closeTab" : "إغلاق التبويب (Ctrl+W)",
+        "tabCount" : "تبويب",
+        "tabsCount" : "تبويبات"
+    },
+    "userInfo" : {
+        "guest" : "ضيف",
+        "user" : "مستخدم",
+        "administrator" : "المدير",
+        "manager" : "مشرف",
+        "staff" : "موظف"
+    },
+    "theme" : {
+        "dark" : "داكن",
+        "light" : "فاتح",
+        "switchTo" : "التبديل إلى"
+    },
+    "dashboard" : {
+        "title" : "OMEGA POS",
+        "subtitle" : "نظام إدارة نقاط البيع",
+        "welcome" : "أهلا وسهلا",
+        "readyToManage" : "أنت جاهز لإدارة عمليات نقطة البيع الخاصة بك. استخدم الإجراءات السريعة أدناه للبدء."
     }
 }

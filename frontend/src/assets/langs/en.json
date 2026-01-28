@@ -1,55 +1,166 @@
 {
     "loader" : {
         "text" : "loading"
-    },"handler" : {
-            "error" : {
-                "unexpected" : {
-                    "title" : "unexpected error !" , 
-                    "Text" : "Unexpected Error Occured , Please Try again or Contact the adminstrator !"
-                },
-                "title" : "error"
-            },"success"  : {
-                "title" : "success"
-            }
+    },
+    "handler" : {
+        "error" : {
+            "unexpected" : {
+                "title" : "unexpected error !", 
+                "text" : "Unexpected Error Occured , Please Try again or Contact the adminstrator !"
+            },
+            "title" : "error"
+        },
+        "success"  : {
+            "title" : "success"
+        }
     },
     "login": {
         "title": "Login",
         "username": "username",
         "password": "Password",
-        "submit": "Login" , 
+        "submit": "Login", 
         "loading" : "logging ..."
-    } 
-    ,"register" : {
-        "title" : "Create Account" , 
+    },
+    "register" : {
+        "title" : "Create Account", 
         "tabs" : {
             "mainInfo" : {
                 "title" : "Personal info",
                 "fields" : {
-                    "username" : "Username" ,
-                    "password" : "Password" , 
-                    "confirmPassword" : "Confirm password" , 
-                    "phone" : "Phone number", 
+                    "username" : "Username",
+                    "password" : "Password", 
+                    "confirmPassword" : "Confirm password", 
+                    "phone" : "Phone number",
+                    "selectRole" : "Select a role",
                     "role" : {
                         "manager" : "manager",
-                        "admin" : "admin" , 
+                        "admin" : "admin", 
                         "seller" : "seller"
                     }
                 }
             },
             "permessions"  :  {
-                "title" : "permessions" , 
+                "title" : "permessions", 
                 "categories" : {
-                    "general" : "general" , 
-                    "manager" : "manager" , 
+                    "general" : "general", 
+                    "manager" : "manager", 
                     "admin" : "admin"
-                }
-                ,"permessions" : {
+                },
+                "permessions" : {
                     "sell" : "sell",
-                    "addUser" : "add user" , 
+                    "addUser" : "add user", 
                     "sellReports" : "sell reports"
                 }
             }
+        },
+        "submit" : "create"
+    },
+    "confirm" : {
+        "logout" : {
+            "title" : "Logout",
+            "message" : "Are you sure you want to logout?"
+        },
+        "closeTab" : {
+            "title" : "Close Tab",
+            "message" : "Are you sure you want to close this tab?"
         }
-         ,"submit" : "create"
+    },
+    "buttons" : {
+        "confirm" : "Confirm",
+        "cancel" : "Cancel",
+        "ok" : "OK",
+        "logout" : "Logout",
+        "yes" : "Yes",
+        "no" : "No"
+    },
+    "menu" : {
+        "file" : "File",
+        "edit" : "Edit",
+        "view" : "View",
+        "sales" : "Sales",
+        "customers" : "Customers",
+        "inventory" : "Inventory",
+        "reports" : "Reports",
+        "settings" : "Settings",
+        "help" : "Help"
+    },
+    "menuItems" : {
+        "newInvoice" : "New Invoice",
+        "salesHistory" : "Sales History",
+        "customers" : "Customers",
+        "newCustomer" : "New Customer",
+        "products" : "Products",
+        "newProduct" : "New Product",
+        "stockSearch" : "Stock Search",
+        "dashboard" : "Dashboard",
+        "preferences" : "Preferences",
+        "exit" : "Exit",
+        "logout" : "Logout",
+        "about" : "About",
+        "help" : "Help",
+        "open" : "Open...",
+        "save" : "Save",
+        "saveAs" : "Save As...",
+        "print" : "Print",
+        "undo" : "Undo",
+        "redo" : "Redo",
+        "cut" : "Cut",
+        "copy" : "Copy",
+        "paste" : "Paste",
+        "fullScreen" : "Full Screen",
+        "refresh" : "Refresh",
+        "viewAllCustomers" : "View All Customers",
+        "customerGroups" : "Customer Groups",
+        "payments" : "Payments",
+        "returns" : "Returns",
+        "viewAllProducts" : "View All Products",
+        "categories" : "Categories",
+        "suppliers" : "Suppliers",
+        "purchaseOrders" : "Purchase Orders",
+        "lowStockAlert" : "Low Stock Alert",
+        "salesReports" : "Sales Reports",
+        "dailySales" : "Daily Sales",
+        "weeklySales" : "Weekly Sales",
+        "monthlySales" : "Monthly Sales",
+        "salesByProduct" : "Sales by Product",
+        "salesByCustomer" : "Sales by Customer",
+        "inventoryReport" : "Inventory Report",
+        "financialReport" : "Financial Report",
+        "customReport" : "Custom Report",
+        "documentation" : "Documentation",
+        "keyboardShortcuts" : "Keyboard Shortcuts",
+        "aboutApp" : "About OMEGA POS"
+    },
+    "footer" : {
+        "online" : "Online",
+        "items" : "Items",
+        "sales" : "Sales",
+        "alerts" : "Alerts",
+        "logout" : "Logout"
+    },
+    "tabBar" : {
+        "noDocuments" : "No open documents — Press F9 or click + to create a new invoice",
+        "newInvoice" : "New Invoice (F9)",
+        "closeTab" : "Close tab (Ctrl+W)",
+        "tabCount" : "tab",
+        "tabsCount" : "tabs"
+    },
+    "userInfo" : {
+        "guest" : "Guest",
+        "user" : "User",
+        "administrator" : "Administrator",
+        "manager" : "Manager",
+        "staff" : "Staff"
+    },
+    "theme" : {
+        "dark" : "Dark",
+        "light" : "Light",
+        "switchTo" : "Switch to"
+    },
+    "dashboard" : {
+        "title" : "OMEGA POS",
+        "subtitle" : "Point of Sale Management System",
+        "welcome" : "Welcome back",
+        "readyToManage" : "You're all set to manage your point of sale operations. Use the quick actions below to get started."
     }
 }

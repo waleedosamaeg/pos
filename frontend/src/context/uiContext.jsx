@@ -15,6 +15,12 @@ const reducer = (state , action)=>{
             return {...state , modal : null}
         case "set-lang" : 
             return {...state , lang : action.payload}
+        case "set-theme" : 
+            return {...state , theme : action.payload}
+        case "confirm" : 
+            return {...state , confirm : action.payload}
+        case "remove.confirm" : 
+            return {...state , confirm : null}
         default : 
             return state
 
@@ -24,7 +30,8 @@ const UiProvider =  ({children})=> {
         theme : "dark" , 
         loading : false , 
         modal : null ,
-        lang : "ar"
+        confirm : null,
+        lang : "en"
     }
 
     const [state , dispatch]= useReducer( reducer , initState)
