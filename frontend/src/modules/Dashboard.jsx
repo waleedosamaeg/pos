@@ -3,6 +3,7 @@ import { BarChart3, Users, Package, FileText, TrendingUp, Award, Shield, Briefca
 import { useTabs } from '@context/TabContext.jsx';
 import { useUserContext } from '@context/userContext.jsx';
 import { useTranslation } from 'react-i18next';
+import AddProduct from './inventory/AddProduct.jsx';
 
 /**
  * Dashboard Module
@@ -16,7 +17,6 @@ export default function Dashboard() {
   // Get user role for statistics display
   const userRole = userState?.user?.profile?.role || 1;
   const userName = userState?.user?.profile?.nickname || userState?.user?.name || 'User';
-
   // Define role-specific statistics
   const getRoleStats = () => {
     switch(userRole) {
@@ -47,13 +47,14 @@ export default function Dashboard() {
   const roleStats = getRoleStats();
 
   const quickActions = [
-    { label: t('menuItems.newInvoice'), icon: FileText, action: () => openTab('SalesScreen', t('menuItems.newInvoice'), {}, false), color: '#3b82f6' },
+    { label: t('menuItems.newInvoice'), icon: FileText, action: () => openTab('sales', t('menuItems.newInvoice'), {}, false), color: '#3b82f6' },
     { label: t('menuItems.products'), icon: Package, action: () => openTab('Products', t('menuItems.products'), {}, true), color: '#8b5cf6' },
     { label: t('menuItems.customers'), icon: Users, action: () => openTab('Customers', t('menuItems.customers'), {}, true), color: '#ec4899' },
     { label: t('menuItems.salesReports'), icon: BarChart3, action: () => openTab('SalesReport', t('menuItems.salesReports'), {}, true), color: '#f59e0b' },
   ];
 
   return (
+    
     <div style={{ padding: '32px', height: '100%', overflow: 'auto' , width  : "50%" }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
         {/* App Header with Centered Logo */}

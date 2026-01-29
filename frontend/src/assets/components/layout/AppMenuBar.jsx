@@ -68,16 +68,11 @@ const menuStructure = [
     ]
   },
   {
-    label: 'Edit',
+    label: 'sales',
     items: [
-      { label: 'Undo', icon: Undo, action: null, shortcut: 'Ctrl+Z' },
-      { label: 'Redo', icon: Redo, action: null, shortcut: 'Ctrl+Y' },
+      { label: 'new invoice', icon: Undo, action: null, shortcut: 'F1' },
       { type: 'separator' },
-      { label: 'Cut', icon: Scissors, action: null, shortcut: 'Ctrl+X' },
-      { label: 'Copy', icon: Copy, action: null, shortcut: 'Ctrl+C' },
-      { label: 'Paste', icon: ClipboardPaste, action: null, shortcut: 'Ctrl+V' },
-      { type: 'separator' },
-      { label: 'Preferences', icon: Settings, action: 'settings', singleton: true }
+      // { label: 'Preferences', icon: Settings, action: 'settings', singleton: true }
     ]
   },
   {
@@ -617,7 +612,7 @@ function AppMenuBar() {
 
     // Map actions to tab types and titles
     const actionMap = {
-      'sales': { type: 'SalesScreen', title: 'Sales Invoice' },
+      'sales': { type: 'sales', title: 'Sales Invoice' },
       'sales-history': { type: 'SalesHistory', title: 'Sales History' },
       'customers': { type: 'Customers', title: 'Customers' },
       'new-customer': { type: 'CustomerForm', title: 'New Customer' },
@@ -625,7 +620,7 @@ function AppMenuBar() {
       'payments': { type: 'Payments', title: 'Payments' },
       'returns': { type: 'Returns', title: 'Returns' },
       'products': { type: 'Products', title: 'Products' },
-      'new-product': { type: 'ProductForm', title: 'New Product' },
+      'new-product': { type: 'new-product', title: 'New Product' },
       'stock-search': { type: 'StockSearch', title: 'Stock Search' },
       'categories': { type: 'Categories', title: 'Categories' },
       'suppliers': { type: 'Suppliers', title: 'Suppliers' },

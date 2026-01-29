@@ -16,7 +16,7 @@
   import Authenticate from "@util/Authentication.js";
   import { useNavigate } from "react-router-dom";
   import { useTranslation } from 'react-i18next';
-  // import  { TabProvider } from "@context/tabContext.jsx";
+  import { TabProvider } from "@context/tabContext.jsx";
 
   function AppContent() { 
       const {state:uiState ,dispatch:uiDispatch} = useUiContext();
@@ -81,9 +81,9 @@
           <UiProvider>
             <UserProvider>
                 <AppProvider>
-                    {/* <TabProvider> */}
+                    <TabProvider>
                         <AppContent />
-                    {/* </TabProvider> */}
+                    </TabProvider>
               </AppProvider>
             </UserProvider>
           </UiProvider>

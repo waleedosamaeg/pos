@@ -14,9 +14,12 @@ const generateTabId = () => `tab-${++tabIdCounter}`;
 export function TabProvider({ children }) {
   // Array of open tabs: { id, type, title, props }
   const [tabs, setTabs] = useState([]);
-  
+
   // Currently active tab ID
   const [activeTabId, setActiveTabId] = useState(null);
+
+  // Tab states storage: { tabId: { componentType: stateData } }
+  const [tabStates, setTabStates] = useState({});
 
   /**
    * Opens a new tab or activates existing tab
@@ -106,6 +109,45 @@ export function TabProvider({ children }) {
   const closeAllTabs = useCallback(() => {
     setTabs([]);
     setActiveTabId(null);
+    setTabStates({});
+  }, []);
+
+  /**
+   * Saves the state of a specific tab
+   * @param {string} tabId - The tab ID
+   * @param {string} componentType - The component type
+   * @param {object} state - The state to save
+   */
+  const saveTabState = useCallback((tabId, componentType, state) => {
+    setTabStates(prev => ({
+      ...prev,
+      [tabId]: {
+        ...(prev[tabId] || {}),
+        [componentType]: state
+      }
+    }));
+  }, []);
+
+  /**
+   * Gets the saved state for a specific tab
+   * @param {string} tabId - The tab ID
+   * @param {string} componentType - The component type
+   * @returns {object|null} The saved state or null
+   */
+  const getTabState = useCallback((tabId, componentType) => {
+    return tabStates[tabId]?.[componentType] || null;
+  }, [tabStates]);
+
+  /**
+   * Clears the state for a specific tab
+   * @param {string} tabId - The tab ID
+   */
+  const clearTabState = useCallback((tabId) => {
+    setTabStates(prev => {
+      const newStates = { ...prev };
+      delete newStates[tabId];
+      return newStates;
+    });
   }, []);
 
   const value = {
@@ -116,7 +158,10 @@ export function TabProvider({ children }) {
     switchTab,
     updateTabTitle,
     getActiveTab,
-    closeAllTabs
+    closeAllTabs,
+    saveTabState,
+    getTabState,
+    clearTabState
   };
 
   return (

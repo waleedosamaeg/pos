@@ -1,305 +1,797 @@
-import React, { useState } from 'react';
-import { X, Plus, Package, DollarSign, BarChart3, Tag } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Plus, Package, Save, Trash2 } from 'lucide-react';
+import { useTabs } from '@context/TabContext.jsx';
+import { useUiContext } from '@context/uiContext.jsx';
+import { useUserContext } from '@context/userContext.jsx';
+import { useTranslation } from 'react-i18next';
 
 /**
- * AddProduct Component
- * Modal form for adding new products to inventory
- * Based on products table structure
+ * AddProduct Component - With Tab State Persistence
+ * Scrollable centered form with narrow fields
  */
-export default function AddProduct({ isOpen, onClose, onSubmit }) {
-  const [formData, setFormData] = useState({
+export default function AddProduct({ tabId, isActive, tabState, setTabState }) {
+  const { closeTab } = useTabs();
+  const { dispatch: uiDispatch } = useUiContext();
+  const { state: userState } = useUserContext();
+  const { t } = useTranslation();
+
+  // Initialize state from tabState or defaults
+  const productData = tabState?.productData || {
     name: '',
     ar_name: '',
     description: '',
     shortcut: '',
     category_id: 1,
     is_active: true,
-  });
-
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Form validation
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Product name is required';
-    } else if (formData.name.length > 45) {
-      newErrors.name = 'Product name must be 45 characters or less';
-    }
-
-    if (!formData.ar_name.trim()) {
-      newErrors.ar_name = 'Arabic name is required';
-    } else if (formData.ar_name.length > 45) {
-      newErrors.ar_name = 'Arabic name must be 45 characters or less';
-    }
-
-    if (formData.shortcut && formData.shortcut.length > 20) {
-      newErrors.shortcut = 'Shortcut must be 20 characters or less';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+  const productUnits = tabState?.productUnits || [
+    { unit_id: 1, quantity_in_base: 1, selling_price: 0 }
+  ];
+
+  const batchData = tabState?.batchData || {
+    unit_id: 1,
+    expiry_date: '2100-01-01',
+    cost_price: 0,
+    selling_price: 0,
+    stock: 0,
+  };
+
+  const errors = tabState?.errors || {};
+  const isSubmitting = tabState?.isSubmitting || false;
+  const showSuccess = tabState?.showSuccess || false;
+
+  // Available units and categories
+  const availableUnits = [
+    { id: 1, name: 'Piece', ar_name: 'قطعة' },
+    { id: 2, name: 'Kilogram', ar_name: 'كيلوغرام' },
+    { id: 3, name: 'Liter', ar_name: 'لتر' },
+    { id: 4, name: 'Meter', ar_name: 'متر' },
+    { id: 5, name: 'Box', ar_name: 'صندوق' },
+    { id: 6, name: 'Pack', ar_name: 'حزمة' },
+  ];
+
+  const availableCategories = [
+    { id: 1, name: 'General', ar_name: 'عام' },
+    { id: 2, name: 'Electronics', ar_name: 'إلكترونيات' },
+    { id: 3, name: 'Clothing', ar_name: 'ملابس' },
+    { id: 4, name: 'Food & Beverage', ar_name: 'أغذية ومشروبات' },
+    { id: 5, name: 'Other', ar_name: 'أخرى' },
+  ];
+
+  // Helper function to update state
+  const updateState = (updates) => {
+    setTabState(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      ...updates
     }));
-    // Clear error for this field
-    if (errors[name]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
   };
 
-  // Handle form submission
+  // Event handlers
+  const handleProductChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    updateState({
+      productData: {
+        ...productData,
+        [name]: type === 'checkbox' ? checked : value,
+      },
+      errors: {
+        ...errors,
+        [name]: undefined
+      }
+    });
+  };
+
+  const handleBatchChange = (e) => {
+    const { name, value, type } = e.target;
+    updateState({
+      batchData: {
+        ...batchData,
+        [name]: type === 'number' ? parseFloat(value) || 0 : value,
+      },
+      errors: {
+        ...errors,
+        [name]: undefined
+      }
+    });
+  };
+
+  const addUnit = () => {
+    updateState({
+      productUnits: [...productUnits, { unit_id: 1, quantity_in_base: 1, selling_price: 0 }]
+    });
+  };
+
+  const removeUnit = (index) => {
+    updateState({
+      productUnits: productUnits.filter((_, i) => i !== index)
+    });
+  };
+
+  const updateUnit = (index, field, value) => {
+    updateState({
+      productUnits: productUnits.map((unit, i) => {
+        if (i === index) {
+          return { ...unit, [field]: field === 'unit_id' ? parseInt(value) || 1 : value };
+        }
+        return unit;
+      })
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
+
+    // Validation
+    const newErrors = {};
+    if (!productData.name.trim()) newErrors.name = 'Required';
+    if (!productData.ar_name.trim()) newErrors.ar_name = 'Required';
+    if (productData.shortcut && productData.shortcut.length > 20) newErrors.shortcut = 'Max 20 chars';
+    if (productUnits.length === 0) newErrors.units = 'At least one unit required';
+
+    productUnits.forEach((unit, index) => {
+      if (!unit.selling_price || unit.selling_price <= 0) {
+        if (!newErrors.unitPrices) newErrors.unitPrices = [];
+        newErrors.unitPrices[index] = 'Required';
+      }
+    });
+
+    if (batchData.stock > 0 && batchData.cost_price <= 0) newErrors.cost_price = 'Required when adding stock';
+    if (batchData.stock > 0 && batchData.selling_price <= 0) newErrors.batch_selling_price = 'Required when adding stock';
+
+    const hasErrors = Object.keys(newErrors).filter(key => !key.includes('unitPrices')).length > 0;
+
+    if (hasErrors) {
+      updateState({ errors: newErrors });
       return;
     }
 
-    setIsSubmitting(true);
+    updateState({ isSubmitting: true });
+
     try {
-      if (onSubmit) {
-        await onSubmit(formData);
-      }
-      // Reset form
-      setFormData({
-        name: '',
-        ar_name: '',
-        description: '',
-        shortcut: '',
-        category_id: 1,
-        is_active: true,
-      });
-      onClose();
+      const productPayload = {
+        ...productData,
+        units: productUnits,
+        initial_batch: batchData.stock > 0 ? batchData : null,
+        created_by: userState?.user?.id || 1
+      };
+
+      console.log('Creating product:', productPayload);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      updateState({ showSuccess: true, isSubmitting: false });
+
+      setTimeout(() => {
+        resetForm();
+        updateState({ showSuccess: false });
+      }, 2000);
     } catch (error) {
-      console.error('Error submitting form:', error);
-    } finally {
-      setIsSubmitting(false);
+      uiDispatch({
+        type: 'modal',
+        payload: { title: 'Error', message: 'Failed to create product. Please try again.' }
+      });
+      updateState({ isSubmitting: false });
     }
   };
 
-  if (!isOpen) return null;
+  const resetForm = () => {
+    updateState({
+      productData: { name: '', ar_name: '', description: '', shortcut: '', category_id: 1, is_active: true },
+      productUnits: [{ unit_id: 1, quantity_in_base: 1, selling_price: 0 }],
+      batchData: { unit_id: 1, expiry_date: '2100-01-01', cost_price: 0, selling_price: 0, stock: 0 },
+      errors: {}
+    });
+  };
+
+  const handleClose = () => {
+    const hasData = productData.name || productData.ar_name || productData.description ||
+                   productUnits.length > 1 || batchData.stock > 0;
+    if (hasData) {
+      uiDispatch({
+        type: 'confirm',
+        payload: {
+          title: t('confirm.closeTab.title'),
+          message: 'You have unsaved changes. Are you sure you want to close?',
+          onConfirm: () => closeTab(tabId)
+        }
+      });
+    } else {
+      closeTab(tabId);
+    }
+  };
 
   return (
     <div style={{
-      position: 'fixed',
-      inset: 0,
-      zIndex: 9999,
+      height: '100%',
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      backdropFilter: 'blur(3px)',
+      flexDirection: 'column',
+      backgroundColor: 'var(--bg-primary)',
+      fontSize: '12px',
     }}>
+      {/* Compact Header */}
       <div style={{
-        width: '100%',
-        maxWidth: '50rem',
-        backgroundColor: 'var(--bg-tertiary)',
-        borderRadius: '0.75rem',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)',
-        border: '1px solid var(--color-border-muted)',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        transition: 'background-color var(--transition-normal), border-color var(--transition-normal)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '10px 16px',
+        backgroundColor: 'var(--bg-secondary)',
+        borderBottom: '1px solid var(--color-border-muted)',
+        flexShrink: 0,
       }}>
-        
-        {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-4 border-b border-slate-700/50 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-yellow-500/10 rounded-lg">
-              <Package className="text-yellow-500" size={20} />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-white">Add New Product</h2>
-              <p className="text-xs text-slate-400 mt-0.5">Create a new product in your inventory</p>
-            </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '6px',
+            background: 'linear-gradient(135deg, var(--color-primary), #f59e0b)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <Package size={18} style={{ color: '#1e293b' }} />
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* Form Content */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          
-          {/* Main Product Info Section */}
           <div>
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <Tag size={16} className="text-yellow-500" />
-              Basic Information
-            </h3>
-            
-            <div className="grid grid-cols-2 gap-4">
+            <h1 style={{
+              fontSize: '14px',
+              fontWeight: '700',
+              margin: 0,
+              color: 'var(--color-text)',
+            }}>
+              {t('menuItems.newProduct')}
+            </h1>
+          </div>
+        </div>
+        <button
+          onClick={handleClose}
+          style={{
+            padding: '6px',
+            backgroundColor: 'transparent',
+            border: 'none',
+            color: 'var(--color-muted)',
+            cursor: 'pointer',
+            borderRadius: '4px',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--bg-input)';
+            e.currentTarget.style.color = 'var(--color-text)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = 'var(--color-muted)';
+          }}
+        >
+          <X size={16} />
+        </button>
+      </div>
+
+      {/* Scrollable Form Content */}
+      <div style={{
+        flex: 1,
+        overflow: 'auto',
+        padding: '16px',
+      }}>
+        <form onSubmit={handleSubmit} style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          maxWidth: '600px',
+          margin: '0 auto',
+        }}>
+          {/* Success Banner */}
+          {showSuccess && (
+            <div style={{
+              padding: '10px 14px',
+              backgroundColor: 'rgba(16, 185, 129, 0.15)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+            }}>
+              <span style={{ color: '#10b981', fontWeight: '600' }}>Product created successfully!</span>
+            </div>
+          )}
+
+          {/* Section 1: Basic Information */}
+          <div style={{
+            backgroundColor: 'var(--bg-secondary)',
+            borderRadius: '8px',
+            border: '1px solid var(--color-border-muted)',
+            padding: '14px',
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '12px',
+              paddingBottom: '10px',
+              borderBottom: '1px solid var(--color-border-muted)',
+            }}>
+              <Package size={16} style={{ color: 'var(--color-primary)' }} />
+              <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text)' }}>
+                Basic Information
+              </span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
               {/* English Name */}
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">
-                  Product Name <span className="text-red-400">*</span>
+              <div style={{ gridColumn: 'span 2' }}>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--color-muted)', marginBottom: '4px' }}>
+                  Product Name <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <input
                   type="text"
-                  id="name"
                   name="name"
-                  value={formData.name}
-                  onChange={handleChange}
+                  value={productData.name}
+                  onChange={handleProductChange}
                   placeholder="Enter product name"
                   maxLength="45"
-                  className={`w-full px-3 py-2 bg-slate-700/50 border rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all ${
-                    errors.name ? 'border-red-500' : 'border-slate-600'
-                  }`}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-input)',
+                    border: `1px solid ${errors.name ? '#ef4444' : 'var(--color-border-muted)'}`,
+                    borderRadius: '6px',
+                    color: 'var(--color-text)',
+                    fontSize: '12px',
+                    outline: 'none',
+                  }}
                 />
-                {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
-                <p className="text-xs text-slate-500 mt-1">{formData.name.length}/45</p>
               </div>
 
               {/* Arabic Name */}
-              <div>
-                <label htmlFor="ar_name" className="block text-sm font-medium text-slate-300 mb-2">
-                  Arabic Name <span className="text-red-400">*</span>
+              <div style={{ gridColumn: 'span 2' }}>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--color-muted)', marginBottom: '4px' }}>
+                  Arabic Name <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <input
                   type="text"
-                  id="ar_name"
                   name="ar_name"
-                  value={formData.ar_name}
-                  onChange={handleChange}
+                  value={productData.ar_name}
+                  onChange={handleProductChange}
                   placeholder="أدخل الاسم بالعربية"
                   maxLength="45"
-                  className={`w-full px-3 py-2 bg-slate-700/50 border rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-right ${
-                    errors.ar_name ? 'border-red-500' : 'border-slate-600'
-                  }`}
                   dir="rtl"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-input)',
+                    border: `1px solid ${errors.ar_name ? '#ef4444' : 'var(--color-border-muted)'}`,
+                    borderRadius: '6px',
+                    color: 'var(--color-text)',
+                    fontSize: '12px',
+                    outline: 'none',
+                    textAlign: 'right',
+                  }}
                 />
-                {errors.ar_name && <p className="text-red-400 text-xs mt-1">{errors.ar_name}</p>}
-                <p className="text-xs text-slate-500 mt-1">{formData.ar_name.length}/45</p>
               </div>
-            </div>
-          </div>
 
-          {/* Description Section */}
-          <div>
-            <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-              <BarChart3 size={16} className="text-yellow-500" />
-              Details
-            </h3>
-
-            <div className="space-y-4">
-              {/* Description */}
+              {/* Shortcut & Category */}
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-slate-300 mb-2">
-                  Description
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--color-muted)', marginBottom: '4px' }}>
+                  Shortcut Code
+                </label>
+                <input
+                  type="text"
+                  name="shortcut"
+                  value={productData.shortcut}
+                  onChange={handleProductChange}
+                  placeholder="e.g., PROD-001"
+                  maxLength="20"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-input)',
+                    border: `1px solid ${errors.shortcut ? '#ef4444' : 'var(--color-border-muted)'}`,
+                    borderRadius: '6px',
+                    color: 'var(--color-text)',
+                    fontSize: '12px',
+                    outline: 'none',
+                    fontFamily: 'monospace',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--color-muted)', marginBottom: '4px' }}>
+                  Category
+                </label>
+                <select
+                  name="category_id"
+                  value={productData.category_id}
+                  onChange={handleProductChange}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-input)',
+                    border: '1px solid var(--color-border-muted)',
+                    borderRadius: '6px',
+                    color: 'var(--color-text)',
+                    fontSize: '12px',
+                    outline: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {availableCategories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Description */}
+              <div style={{ gridColumn: 'span 2' }}>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--color-muted)', marginBottom: '4px' }}>
+                  Description <span style={{ color: 'var(--color-muted)' }}>(Optional)</span>
                 </label>
                 <textarea
-                  id="description"
                   name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Enter product description (optional)"
-                  rows="4"
-                  className="w-full px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all resize-none"
+                  value={productData.description}
+                  onChange={handleProductChange}
+                  placeholder="Enter product description"
+                  rows="2"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-input)',
+                    border: '1px solid var(--color-border-muted)',
+                    borderRadius: '6px',
+                    color: 'var(--color-text)',
+                    fontSize: '12px',
+                    outline: 'none',
+                    resize: 'none',
+                  }}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                {/* Shortcut Code */}
-                <div>
-                  <label htmlFor="shortcut" className="block text-sm font-medium text-slate-300 mb-2">
-                    Shortcut Code
-                  </label>
+              {/* Active Toggle */}
+              <div style={{ gridColumn: 'span 2' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', backgroundColor: 'var(--bg-tertiary)', borderRadius: '6px', cursor: 'pointer' }}>
                   <input
-                    type="text"
-                    id="shortcut"
-                    name="shortcut"
-                    value={formData.shortcut}
-                    onChange={handleChange}
-                    placeholder="e.g., PROD-001"
-                    maxLength="20"
-                    className={`w-full px-3 py-2 bg-slate-700/50 border rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all font-mono ${
-                      errors.shortcut ? 'border-red-500' : 'border-slate-600'
-                    }`}
+                    type="checkbox"
+                    name="is_active"
+                    checked={productData.is_active}
+                    onChange={handleProductChange}
+                    style={{ width: '16px', height: '16px', accentColor: 'var(--color-primary)', cursor: 'pointer' }}
                   />
-                  {errors.shortcut && <p className="text-red-400 text-xs mt-1">{errors.shortcut}</p>}
-                  <p className="text-xs text-slate-500 mt-1">{formData.shortcut.length}/20</p>
-                </div>
-
-                {/* Category ID */}
-                <div>
-                  <label htmlFor="category_id" className="block text-sm font-medium text-slate-300 mb-2">
-                    Category
-                  </label>
-                  <select
-                    id="category_id"
-                    name="category_id"
-                    value={formData.category_id}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
-                  >
-                    <option value="1">General</option>
-                    <option value="2">Electronics</option>
-                    <option value="3">Clothing</option>
-                    <option value="4">Food & Beverage</option>
-                    <option value="5">Other</option>
-                  </select>
-                </div>
+                  <span style={{ fontSize: '12px', fontWeight: '500', color: 'var(--color-text)' }}>Active Product</span>
+                </label>
               </div>
             </div>
           </div>
 
-          {/* Status Section */}
-          <div className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/50">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                name="is_active"
-                checked={formData.is_active}
-                onChange={handleChange}
-                className="w-4 h-4 accent-yellow-500 rounded cursor-pointer"
-              />
-              <span className="text-sm font-medium text-slate-300">
-                Active Product
-              </span>
-              <span className="ml-auto text-xs text-slate-500">
-                {formData.is_active ? '✓ Active' : '○ Inactive'}
-              </span>
-            </label>
+          {/* Section 2: Product Units */}
+          <div style={{
+            backgroundColor: 'var(--bg-secondary)',
+            borderRadius: '8px',
+            border: '1px solid var(--color-border-muted)',
+            padding: '14px',
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '12px',
+              paddingBottom: '10px',
+              borderBottom: '1px solid var(--color-border-muted)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Plus size={16} style={{ color: 'var(--color-primary)' }} />
+                <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text)' }}>
+                  Units & Pricing
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={addUnit}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '6px 10px',
+                  backgroundColor: 'var(--color-primary)',
+                  border: 'none',
+                  borderRadius: '4px',
+                  color: '#1e293b',
+                  fontSize: '11px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                }}
+              >
+                <Plus size={14} />
+                Add Unit
+              </button>
+            </div>
+
+            {/* Units List */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {productUnits.map((unit, index) => (
+                <div key={index} style={{
+                  display: 'grid',
+                  gridTemplateColumns: '2fr 1fr 1fr auto',
+                  gap: '10px',
+                  padding: '12px',
+                  backgroundColor: 'var(--bg-tertiary)',
+                  borderRadius: '6px',
+                  alignItems: 'end',
+                }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', color: 'var(--color-muted)', marginBottom: '3px' }}>Unit Type</label>
+                    <select
+                      value={unit.unit_id}
+                      onChange={(e) => updateUnit(index, 'unit_id', e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '8px 10px',
+                        backgroundColor: 'var(--bg-input)',
+                        border: '1px solid var(--color-border-muted)',
+                        borderRadius: '4px',
+                        color: 'var(--color-text)',
+                        fontSize: '11px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {availableUnits.map(u => (
+                        <option key={u.id} value={u.id}>{u.name} ({u.ar_name})</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', color: 'var(--color-muted)', marginBottom: '3px' }}>Qty Base</label>
+                    <input
+                      type="number"
+                      value={unit.quantity_in_base}
+                      onChange={(e) => updateUnit(index, 'quantity_in_base', e.target.value)}
+                      min="0.001"
+                      step="0.001"
+                      style={{
+                        width: '100%',
+                        padding: '8px 10px',
+                        backgroundColor: 'var(--bg-input)',
+                        border: '1px solid var(--color-border-muted)',
+                        borderRadius: '4px',
+                        color: 'var(--color-text)',
+                        fontSize: '11px',
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '10px', color: 'var(--color-muted)', marginBottom: '3px' }}>
+                      Price <span style={{ color: '#ef4444' }}>*</span>
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-muted)', fontSize: '12px' }}>$</span>
+                      <input
+                        type="number"
+                        value={unit.selling_price}
+                        onChange={(e) => updateUnit(index, 'selling_price', e.target.value)}
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                        style={{
+                          width: '100%',
+                          padding: '8px 10px 8px 26px',
+                          backgroundColor: 'var(--bg-input)',
+                          border: `1px solid ${errors.unitPrices && errors.unitPrices[index] ? '#ef4444' : 'var(--color-border-muted)'}`,
+                          borderRadius: '4px',
+                          color: 'var(--color-text)',
+                          fontSize: '11px',
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {productUnits.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeUnit(index)}
+                      style={{
+                        padding: '8px',
+                        backgroundColor: 'transparent',
+                        border: 'none',
+                        color: 'var(--color-muted)',
+                        cursor: 'pointer',
+                        borderRadius: '4px',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                        e.currentTarget.style.color = '#ef4444';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = 'var(--color-muted)';
+                      }}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Form Actions */}
-          <div className="flex gap-3 pt-4 border-t border-slate-700/50">
+          {/* Section 3: Initial Stock */}
+          <div style={{
+            backgroundColor: 'var(--bg-secondary)',
+            borderRadius: '8px',
+            border: '1px solid var(--color-border-muted)',
+            padding: '14px',
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '12px',
+              paddingBottom: '10px',
+              borderBottom: '1px solid var(--color-border-muted)',
+            }}>
+              <Package size={16} style={{ color: 'var(--color-primary)' }} />
+              <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text)' }}>
+                Initial Stock
+              </span>
+              <span style={{ fontSize: '11px', color: 'var(--color-muted)' }}>(Optional)</span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--color-muted)', marginBottom: '4px' }}>Stock Qty</label>
+                <input
+                  type="number"
+                  name="stock"
+                  value={batchData.stock}
+                  onChange={handleBatchChange}
+                  min="0"
+                  step="0.001"
+                  placeholder="0"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-input)',
+                    border: '1px solid var(--color-border-muted)',
+                    borderRadius: '6px',
+                    color: 'var(--color-text)',
+                    fontSize: '12px',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--color-muted)', marginBottom: '4px' }}>
+                  Cost Price {batchData.stock > 0 && <span style={{ color: '#ef4444' }}>*</span>}
+                </label>
+                <input
+                  type="number"
+                  name="cost_price"
+                  value={batchData.cost_price}
+                  onChange={handleBatchChange}
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-input)',
+                    border: `1px solid ${errors.cost_price ? '#ef4444' : 'var(--color-border-muted)'}`,
+                    borderRadius: '6px',
+                    color: 'var(--color-text)',
+                    fontSize: '12px',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--color-muted)', marginBottom: '4px' }}>
+                  Selling Price {batchData.stock > 0 && <span style={{ color: '#ef4444' }}>*</span>}
+                </label>
+                <input
+                  type="number"
+                  name="selling_price"
+                  value={batchData.selling_price}
+                  onChange={handleBatchChange}
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-input)',
+                    border: `1px solid ${errors.batch_selling_price ? '#ef4444' : 'var(--color-border-muted)'}`,
+                    borderRadius: '6px',
+                    color: 'var(--color-text)',
+                    fontSize: '12px',
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', color: 'var(--color-muted)', marginBottom: '4px' }}>Expiry Date</label>
+                <input
+                  type="date"
+                  name="expiry_date"
+                  value={batchData.expiry_date}
+                  onChange={handleBatchChange}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    backgroundColor: 'var(--bg-input)',
+                    border: '1px solid var(--color-border-muted)',
+                    borderRadius: '6px',
+                    color: 'var(--color-text)',
+                    fontSize: '12px',
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Compact Footer Actions */}
+          <div style={{
+            display: 'flex',
+            gap: '10px',
+            paddingTop: '8px',
+          }}>
             <button
               type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:border-slate-500 transition-all font-medium"
+              onClick={handleClose}
+              style={{
+                flex: 1,
+                padding: '10px 16px',
+                borderRadius: '6px',
+                border: '1px solid var(--color-border-muted)',
+                backgroundColor: 'transparent',
+                color: 'var(--color-text-secondary)',
+                fontSize: '12px',
+                fontWeight: '500',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--bg-input)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
               Cancel
             </button>
             <button
-              type="submit"
+              onClick={handleSubmit}
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2.5 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-900 font-semibold hover:from-yellow-400 hover:to-yellow-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              style={{
+                flex: 2,
+                padding: '10px 20px',
+                borderRadius: '6px',
+                border: 'none',
+                background: 'linear-gradient(135deg, var(--color-primary), #f59e0b)',
+                color: '#1e293b',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                opacity: isSubmitting ? 0.5 : 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+              }}
+              onMouseEnter={(e) => {
+                if (!isSubmitting) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSubmitting) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, var(--color-primary), #f59e0b)';
+                }
+              }}
             >
               {isSubmitting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" />
+                  <div style={{ width: '16px', height: '16px', border: '2px solid #1e293b', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                   Creating...
                 </>
               ) : (
                 <>
-                  <Plus size={18} />
+                  <Save size={16} />
                   Create Product
                 </>
               )}
@@ -307,6 +799,12 @@ export default function AddProduct({ isOpen, onClose, onSubmit }) {
           </div>
         </form>
       </div>
+
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

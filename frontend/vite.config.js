@@ -19,6 +19,7 @@ export default defineConfig({
         "@logo" : path.resolve(__dirname , "src/assets/static/imgs/logo"),
         "@util" : path.resolve(__dirname, 'src/utils/'),
         "@hook" : path.resolve(__dirname, 'src/hooks'),
+        "@module" : path.resolve(__dirname, 'src/modules'),
 
       }
   }
